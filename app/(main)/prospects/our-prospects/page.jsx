@@ -162,7 +162,7 @@ export default function OurProspects() {
   const [selectedIndustry, setSelectedIndustry] = useState("");
   const [selectedStatus, setSelectedStatus] = useState("");
   const [selectedPipeline, setSelectedPipeline] = useState("");
-  const [viewMode, setViewMode] = (useState < "cards") | ("table" > "cards");
+  const [viewMode, setViewMode] = useState("cards");
   const [favorites, setFavorites] = useState(
     mockDetailedProspects.filter((p) => p.isFavorite).map((p) => p.id)
   );
