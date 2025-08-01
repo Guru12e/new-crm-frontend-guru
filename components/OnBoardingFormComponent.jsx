@@ -26,13 +26,13 @@ import {
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 
-export default function OnBoardingFormComponent() {
+export default function OnBoardingFormComponent({ session }) {
   const router = useRouter();
   const [currentSection, setCurrentSection] = useState(1);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
-    email: "",
+    email: session.user.email || "",
     role: "",
     phone: "",
     companyName: "",
