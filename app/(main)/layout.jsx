@@ -177,7 +177,6 @@ export default function Layout({ children }) {
                     )}
                   </div>
 
-                  {/* Subpages */}
                   {hasSubpages && isExpanded && sidebarOpen && (
                     <div className="ml-8 mt-1 space-y-1 max-sm:hidden">
                       {item.subpages.map((subpage) => (
@@ -203,7 +202,6 @@ export default function Layout({ children }) {
         </div>
       </div>
 
-      {/* Mobile Sidebar */}
       <div
         className={cn(
           "fixed inset-y-0 left-0 z-50 w-64 transition-transform duration-300 ease-in-out sm:hidden",
@@ -211,7 +209,6 @@ export default function Layout({ children }) {
         )}
       >
         <div className="flex h-full flex-col backdrop-blur-xl bg-white/90 dark:bg-slate-900/90 border-r border-white/30 dark:border-slate-700/50">
-          {/* Mobile Logo */}
           <div className="flex h-16 items-center justify-between px-4">
             <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
               GTM Engine
@@ -226,7 +223,6 @@ export default function Layout({ children }) {
             </Button>
           </div>
 
-          {/* Mobile Navigation */}
           <nav className="flex-1 space-y-1 px-2 py-4">
             {navigation.map((item) => {
               const isActive =
@@ -279,7 +275,6 @@ export default function Layout({ children }) {
                     )}
                   </div>
 
-                  {/* Mobile Subpages */}
                   {hasSubpages && isExpanded && (
                     <div className="ml-8 mt-1 space-y-1">
                       {item.subpages.map((subpage) => (
@@ -306,18 +301,15 @@ export default function Layout({ children }) {
         </div>
       </div>
 
-      {/* Main content */}
       <div
         className={cn(
           "transition-all duration-300 ease-in-out min-h-screen",
           sidebarOpen ? "ml-64" : "ml-16",
-          "max-sm:ml-0" // No margin on mobile
+          "max-sm:ml-0"
         )}
       >
-        {/* Navbar */}
         <div className="sticky top-0 z-40 backdrop-blur-xl bg-white/90 dark:bg-slate-900/90 border-b border-white/30 dark:border-slate-700/50">
           <div className="flex h-16 items-center justify-between px-4 sm:px-6">
-            {/* Mobile Menu Button */}
             <Button
               variant="ghost"
               size="sm"
@@ -327,7 +319,6 @@ export default function Layout({ children }) {
               <Menu className="h-5 w-5" />
             </Button>
 
-            {/* Search */}
             <div className="flex-1 max-w-md min-w-0 ml-2 sm:ml-0">
               <div className="relative">
                 <Search className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
@@ -340,9 +331,7 @@ export default function Layout({ children }) {
               </div>
             </div>
 
-            {/* Right side nav items */}
             <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* Contact Us */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -352,7 +341,6 @@ export default function Layout({ children }) {
                 <span className="hidden md:inline">Contact Us</span>
               </Button>
 
-              {/* Contact Us - Mobile Only */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -361,7 +349,6 @@ export default function Layout({ children }) {
                 <HelpCircle className="h-4 w-4" />
               </Button>
 
-              {/* Theme Toggle */}
               <Button
                 variant="ghost"
                 size="sm"
@@ -375,7 +362,6 @@ export default function Layout({ children }) {
                 )}
               </Button>
 
-              {/* Profile Dropdown */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -384,9 +370,7 @@ export default function Layout({ children }) {
                   >
                     <Avatar className="h-8 w-8">
                       <AvatarImage src="/avatars/01.png" alt="@user" />
-                      <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white">
-                        JD
-                      </AvatarFallback>
+                      <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white"></AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
@@ -432,13 +416,11 @@ export default function Layout({ children }) {
           </div>
         </div>
 
-        {/* Page content */}
         <main className="p-4 sm:p-4 md:p-6 overflow-x-hidden">
           <div className="max-w-full min-w-0">{children}</div>
         </main>
       </div>
 
-      {/* Chatbot Icon */}
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           size="lg"

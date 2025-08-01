@@ -31,7 +31,6 @@ import {
   XCircle,
 } from "lucide-react";
 
-// Mock meeting data
 const mockMeetings = [
   {
     id: 1,
@@ -159,7 +158,6 @@ export default function Calendar() {
     return matchesSearch && matchesType && matchesMonth && matchesStatus;
   });
 
-  // Separate today's meetings and upcoming meetings
   const today = new Date().toISOString().split("T")[0];
   const todaysMeetings = filteredMeetings.filter(
     (meeting) => meeting.date === today
@@ -347,7 +345,6 @@ export default function Calendar() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
@@ -363,7 +360,6 @@ export default function Calendar() {
         </Button>
       </div>
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <SummaryCard
           title="Today's Meetings"
@@ -391,7 +387,6 @@ export default function Calendar() {
         />
       </div>
 
-      {/* Filters */}
       <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
         <CardContent className="p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -455,7 +450,6 @@ export default function Calendar() {
         </CardContent>
       </Card>
 
-      {/* Today's Meetings */}
       {todaysMeetings.length > 0 && (
         <div className="space-y-4">
           <div className="sticky top-0 z-10 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-2">
@@ -470,7 +464,6 @@ export default function Calendar() {
         </div>
       )}
 
-      {/* Upcoming Meetings */}
       {upcomingMeetings.length > 0 && (
         <div className="space-y-4">
           <div className="sticky top-0 z-10 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-2">
@@ -485,7 +478,6 @@ export default function Calendar() {
         </div>
       )}
 
-      {/* Past Meetings */}
       {pastMeetings.length > 0 && (
         <div className="space-y-4">
           <div className="sticky top-0 z-10 bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 py-2">
@@ -504,7 +496,6 @@ export default function Calendar() {
         </div>
       )}
 
-      {/* Empty State */}
       {filteredMeetings.length === 0 && (
         <Card className="backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 border-white/20">
           <CardContent className="p-12 text-center">

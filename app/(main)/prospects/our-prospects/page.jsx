@@ -34,7 +34,6 @@ import {
   Clock,
 } from "lucide-react";
 
-// Mock detailed prospect data
 const mockDetailedProspects = [
   {
     id: 1,
@@ -368,7 +367,6 @@ export default function OurProspects() {
 
   return (
     <div className="space-y-4 sm:space-y-6 max-w-full">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
@@ -393,7 +391,6 @@ export default function OurProspects() {
         </div>
       </div>
 
-      {/* Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
           <CardContent className="p-4">
@@ -462,7 +459,6 @@ export default function OurProspects() {
         </Card>
       </div>
 
-      {/* Filters */}
       <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
         <CardContent className="p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -521,14 +517,12 @@ export default function OurProspects() {
         </CardContent>
       </Card>
 
-      {/* Prospects List */}
       <div className="space-y-4">
         {filteredProspects.map((prospect) => (
           <ProspectCard key={prospect.id} prospect={prospect} />
         ))}
       </div>
 
-      {/* Empty State */}
       {filteredProspects.length === 0 && (
         <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
           <CardContent className="p-8 sm:p-12 text-center">

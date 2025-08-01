@@ -36,7 +36,6 @@ import {
   Camera,
 } from "lucide-react";
 
-// Mock campaign data
 const mockCampaigns = {
   google: [
     {
@@ -140,7 +139,6 @@ export default function Campaigns() {
   });
 
   const generateAd = () => {
-    // AI-generated ad simulation
     setNewGoogleAd({
       name: "AI-Generated SaaS Lead Campaign",
       budget: "3000",
@@ -336,7 +334,6 @@ export default function Campaigns() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
@@ -353,7 +350,6 @@ export default function Campaigns() {
         </Button>
       </div>
 
-      {/* Campaign Tabs */}
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
@@ -377,9 +373,7 @@ export default function Campaigns() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Google Ads Tab */}
         <TabsContent value="google" className="space-y-6">
-          {/* Google Ads Creation */}
           <Card className="backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 border-white/20">
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -457,7 +451,6 @@ export default function Campaigns() {
             </CardContent>
           </Card>
 
-          {/* Google Ads List */}
           <div className="space-y-4">
             {mockCampaigns.google.map((campaign) => (
               <CampaignCard
@@ -469,9 +462,7 @@ export default function Campaigns() {
           </div>
         </TabsContent>
 
-        {/* LinkedIn Posts Tab */}
         <TabsContent value="linkedin" className="space-y-6">
-          {/* LinkedIn Post Creation */}
           <Card className="backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 border-white/20">
             <CardHeader>
               <CardTitle>Create LinkedIn Post</CardTitle>
@@ -521,7 +512,6 @@ export default function Campaigns() {
             </CardContent>
           </Card>
 
-          {/* LinkedIn Posts List */}
           <div className="space-y-4">
             {mockCampaigns.linkedin.map((post) => (
               <CampaignCard key={post.id} campaign={post} type="linkedin" />
@@ -529,9 +519,7 @@ export default function Campaigns() {
           </div>
         </TabsContent>
 
-        {/* Instagram Posts Tab */}
         <TabsContent value="instagram" className="space-y-6">
-          {/* Instagram Post Creation */}
           <Card className="backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 border-white/20">
             <CardHeader>
               <CardTitle>Create Instagram Post</CardTitle>
@@ -576,7 +564,6 @@ export default function Campaigns() {
             </CardContent>
           </Card>
 
-          {/* Instagram Posts List */}
           <div className="space-y-4">
             {mockCampaigns.instagram.map((post) => (
               <CampaignCard key={post.id} campaign={post} type="instagram" />

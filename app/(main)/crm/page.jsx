@@ -33,7 +33,6 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// Mock data for CRM
 const summaryStats = {
   customers: { total: 1247, new: 89, growth: 12 },
   leads: { total: 2456, qualified: 567, growth: 18 },
@@ -433,7 +432,6 @@ export default function CRM() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
@@ -448,7 +446,6 @@ export default function CRM() {
         </Button>
       </div>
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <SummaryCard
           title="On-boarded Customers"
@@ -473,7 +470,6 @@ export default function CRM() {
         />
       </div>
 
-      {/* Main Content Tabs */}
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
@@ -497,7 +493,6 @@ export default function CRM() {
           </TabsTrigger>
         </TabsList>
 
-        {/* Filters */}
         <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
           <CardContent className="p-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
@@ -557,7 +552,6 @@ export default function CRM() {
           </CardContent>
         </Card>
 
-        {/* Customers Tab */}
         <TabsContent value="customers" className="space-y-6">
           <div className="grid grid-cols-1 gap-6">
             {mockCustomers.map((customer) => (
@@ -566,7 +560,6 @@ export default function CRM() {
           </div>
         </TabsContent>
 
-        {/* Leads Tab */}
         <TabsContent value="leads" className="space-y-6">
           <div className="grid grid-cols-1 gap-6">
             {mockLeads.map((lead) => (
@@ -575,7 +568,6 @@ export default function CRM() {
           </div>
         </TabsContent>
 
-        {/* Deals Tab */}
         <TabsContent value="deals" className="space-y-6">
           <div className="grid grid-cols-1 gap-6">
             {mockDeals.map((deal) => (

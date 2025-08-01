@@ -34,7 +34,6 @@ import {
   AlertTriangle,
 } from "lucide-react";
 
-// Mock analytics data
 const analyticsData = {
   overview: {
     totalRevenue: 2340000,
@@ -63,7 +62,7 @@ const analyticsData = {
     wonDeals: 89,
     lostDeals: 23,
     avgDealSize: 25600,
-    salesCycle: 32, // days
+    salesCycle: 32,
     pipeline: [
       { stage: "Prospecting", count: 67, value: 1670000 },
       { stage: "Qualification", count: 45, value: 1125000 },
@@ -281,7 +280,6 @@ export default function Analytics() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
@@ -309,7 +307,6 @@ export default function Analytics() {
         </div>
       </div>
 
-      {/* Filter Bar */}
       <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
         <CardContent className="p-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -345,7 +342,6 @@ export default function Analytics() {
         </CardContent>
       </Card>
 
-      {/* Analytics Tabs */}
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
@@ -359,7 +355,6 @@ export default function Analytics() {
           <TabsTrigger value="customer">Customer</TabsTrigger>
         </TabsList>
 
-        {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-4 sm:space-y-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             <MetricCard
@@ -417,7 +412,6 @@ export default function Analytics() {
           </div>
         </TabsContent>
 
-        {/* Traffic Tab */}
         <TabsContent value="traffic" className="space-y-4 sm:space-y-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             <MetricCard
@@ -498,7 +492,6 @@ export default function Analytics() {
           </Card>
         </TabsContent>
 
-        {/* Sales Tab */}
         <TabsContent value="sales" className="space-y-4 sm:space-y-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             <MetricCard
@@ -534,7 +527,6 @@ export default function Analytics() {
           </Card>
         </TabsContent>
 
-        {/* Marketing Tab */}
         <TabsContent value="marketing" className="space-y-6">
           <Card className="backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 border-white/20">
             <CardHeader>
@@ -572,7 +564,6 @@ export default function Analytics() {
           </Card>
         </TabsContent>
 
-        {/* Customer Tab */}
         <TabsContent value="customer" className="space-y-4 sm:space-y-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
             <MetricCard

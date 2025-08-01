@@ -25,7 +25,6 @@ import {
   BarChart3,
 } from "lucide-react";
 
-// Mock analytics data for different channels
 const emailAnalytics = {
   totalSent: 1250,
   opened: 875,
@@ -240,7 +239,6 @@ export default function Engagement() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
@@ -256,7 +254,6 @@ export default function Engagement() {
         </Button>
       </div>
 
-      {/* Channel Tabs */}
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
@@ -316,7 +313,6 @@ export default function Engagement() {
           </TabsList>
         </div>
 
-        {/* Email Analytics */}
         <TabsContent value="email" className="space-y-4 sm:space-y-6">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <AnalyticsCard
@@ -380,7 +376,6 @@ export default function Engagement() {
           </Card>
         </TabsContent>
 
-        {/* Slack Analytics */}
         <TabsContent value="slack" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <AnalyticsCard
@@ -440,7 +435,6 @@ export default function Engagement() {
           </Card>
         </TabsContent>
 
-        {/* Call Analytics */}
         <TabsContent value="calls" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <AnalyticsCard
@@ -504,7 +498,6 @@ export default function Engagement() {
           </Card>
         </TabsContent>
 
-        {/* WhatsApp Analytics */}
         <TabsContent value="whatsapp" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <AnalyticsCard
@@ -566,7 +559,6 @@ export default function Engagement() {
           </Card>
         </TabsContent>
 
-        {/* Reddit Analytics */}
         <TabsContent value="reddit" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <AnalyticsCard
@@ -622,7 +614,6 @@ export default function Engagement() {
           </Card>
         </TabsContent>
 
-        {/* Discord Analytics */}
         <TabsContent value="discord" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <AnalyticsCard
@@ -679,7 +670,6 @@ export default function Engagement() {
           </Card>
         </TabsContent>
 
-        {/* LinkedIn Analytics */}
         <TabsContent value="linkedin" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <AnalyticsCard

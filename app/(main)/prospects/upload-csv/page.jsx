@@ -18,7 +18,6 @@ import {
   Phone,
 } from "lucide-react";
 
-// Mock uploaded data preview
 const mockUploadedData = [
   {
     id: 1,
@@ -113,7 +112,6 @@ export default function UploadCSV() {
     setUploadedFile(file);
     setUploadStatus("uploading");
 
-    // Simulate upload process
     setTimeout(() => {
       setUploadStatus("success");
       setShowPreview(true);
@@ -121,7 +119,6 @@ export default function UploadCSV() {
   };
 
   const downloadTemplate = () => {
-    // Create CSV template
     const csvContent =
       "Name,Title,Company,Email,Phone,Location,Industry\nJohn Doe,Marketing Manager,Example Corp,john@example.com,+1 (555) 123-4567,New York NY,Technology";
     const blob = new Blob([csvContent], { type: "text/csv" });
@@ -140,7 +137,6 @@ export default function UploadCSV() {
   };
 
   const importProspects = () => {
-    // Simulate import process
     alert(
       "Prospects imported successfully! You can track actions for this data in the Outreach page."
     );
@@ -148,7 +144,6 @@ export default function UploadCSV() {
 
   return (
     <div className="space-y-4 sm:space-y-6 max-w-4xl mx-auto">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
@@ -168,7 +163,6 @@ export default function UploadCSV() {
         </Button>
       </div>
 
-      {/* Upload Instructions */}
       <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
         <CardHeader>
           <CardTitle className="flex items-center">
@@ -210,7 +204,6 @@ export default function UploadCSV() {
         </CardContent>
       </Card>
 
-      {/* Upload Area */}
       <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
         <CardContent className="p-6">
           <div
@@ -293,7 +286,6 @@ export default function UploadCSV() {
         </CardContent>
       </Card>
 
-      {/* Data Preview */}
       {showPreview && (
         <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
           <CardHeader>
@@ -309,7 +301,6 @@ export default function UploadCSV() {
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              {/* Preview Table - Mobile Responsive */}
               <div className="hidden md:block overflow-x-auto">
                 <table className="w-full border border-slate-200 dark:border-slate-700 rounded-lg">
                   <thead className="bg-slate-50 dark:bg-slate-800">
@@ -370,7 +361,6 @@ export default function UploadCSV() {
                 </table>
               </div>
 
-              {/* Mobile Cards */}
               <div className="md:hidden space-y-3">
                 {mockUploadedData.map((prospect) => (
                   <Card
@@ -406,7 +396,6 @@ export default function UploadCSV() {
                 ))}
               </div>
 
-              {/* Import Actions */}
               <div className="flex flex-col sm:flex-row gap-4 pt-4 border-t border-slate-200 dark:border-slate-700">
                 <Button
                   onClick={importProspects}
@@ -424,7 +413,6 @@ export default function UploadCSV() {
                 </Button>
               </div>
 
-              {/* Outreach Callout */}
               <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
                 <div className="flex items-start space-x-3">
                   <Users className="h-6 w-6 text-blue-600 mt-1" />
@@ -446,7 +434,6 @@ export default function UploadCSV() {
         </Card>
       )}
 
-      {/* Tips */}
       <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
         <CardHeader>
           <CardTitle className="text-lg">💡 Pro Tips</CardTitle>

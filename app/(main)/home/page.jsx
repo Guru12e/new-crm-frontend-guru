@@ -96,7 +96,6 @@ export default function Home() {
     </Card>
   );
 
-  // Pie Chart Component
   const PieChartSVG = () => {
     const total = dealClassification.reduce((sum, item) => sum + item.value, 0);
     let cumulativePercentage = 0;
@@ -176,7 +175,6 @@ export default function Home() {
     );
   };
 
-  // Bar Chart Component
   const BarChartSVG = () => {
     const maxValue = Math.max(...customerSources.map((s) => s.value));
 
@@ -232,7 +230,6 @@ export default function Home() {
     );
   };
 
-  // Line Chart with Histogram Component
   const LineHistogramChart = () => {
     const maxRevenue = Math.max(...revenueData.map((d) => d.revenue));
     const maxDeals = Math.max(...revenueData.map((d) => d.deals));
@@ -247,7 +244,6 @@ export default function Home() {
             </linearGradient>
           </defs>
 
-          {/* Histogram bars for deals */}
           {revenueData.map((month, index) => {
             const barHeight = (month.deals / maxDeals) * 80;
             const barWidth = 25;
@@ -267,7 +263,6 @@ export default function Home() {
             );
           })}
 
-          {/* Revenue line */}
           <path
             d={revenueData
               .map((month, index) => {
@@ -282,7 +277,6 @@ export default function Home() {
             className="drop-shadow-sm"
           />
 
-          {/* Revenue points */}
           {revenueData.map((month, index) => {
             const x = index * 90 + 52.5;
             const y = 160 - (month.revenue / maxRevenue) * 120;
@@ -298,7 +292,6 @@ export default function Home() {
             );
           })}
 
-          {/* Month labels */}
           {revenueData.map((month, index) => (
             <text
               key={`label-${index}`}
@@ -312,7 +305,6 @@ export default function Home() {
             </text>
           ))}
 
-          {/* Legend */}
           <g transform="translate(20, 20)">
             <line
               x1="0"
@@ -353,7 +345,6 @@ export default function Home() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
@@ -384,7 +375,6 @@ export default function Home() {
         </Button>
       </div>
 
-      {/* Key Metrics */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
         <MetricCard
           title="Onboarding Rate"
@@ -406,9 +396,7 @@ export default function Home() {
         />
       </div>
 
-      {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
-        {/* Deal Classification */}
         <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
           <CardHeader>
             <CardTitle className="flex items-center">
@@ -435,7 +423,6 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        {/* Customer Sources */}
         <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
           <CardHeader>
             <CardTitle className="flex items-center">
@@ -463,7 +450,6 @@ export default function Home() {
         </Card>
       </div>
 
-      {/* Revenue Section */}
       <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
         <CardHeader>
           <CardTitle className="flex items-center">
@@ -497,9 +483,7 @@ export default function Home() {
         </CardContent>
       </Card>
 
-      {/* Bottom Row - Action Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        {/* Upcoming Meetings */}
         <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
           <CardHeader>
             <CardTitle className="flex items-center">
@@ -526,7 +510,6 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        {/* Active Deals */}
         <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
           <CardHeader>
             <CardTitle className="flex items-center">
@@ -554,7 +537,6 @@ export default function Home() {
           </CardContent>
         </Card>
 
-        {/* Priority Tasks */}
         <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20">
           <CardHeader>
             <CardTitle className="flex items-center">

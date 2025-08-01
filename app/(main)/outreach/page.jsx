@@ -22,7 +22,6 @@ import {
   AlertCircle,
 } from "lucide-react";
 
-// Similar structure to Engagement but focused on outreach for sourced leads
 const outreachData = {
   email: {
     campaigns: 15,
@@ -128,7 +127,6 @@ export default function Outreach() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white">
@@ -153,7 +151,6 @@ export default function Outreach() {
         </div>
       </div>
 
-      {/* Overview Stats */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
         <MetricCard
           title="Total Outreach"
@@ -189,7 +186,6 @@ export default function Outreach() {
         />
       </div>
 
-      {/* Channel Performance Tabs */}
       <Tabs
         value={activeTab}
         onValueChange={setActiveTab}
@@ -202,10 +198,8 @@ export default function Outreach() {
           <TabsTrigger value="calls">Call Outreach</TabsTrigger>
         </TabsList>
 
-        {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Channel Performance */}
             <Card className="backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 border-white/20">
               <CardHeader>
                 <CardTitle>Channel Performance</CardTitle>
@@ -267,7 +261,6 @@ export default function Outreach() {
               </CardContent>
             </Card>
 
-            {/* Recent Activity */}
             <Card className="backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 border-white/20">
               <CardHeader>
                 <CardTitle>Recent Outreach Activity</CardTitle>
@@ -327,7 +320,6 @@ export default function Outreach() {
           </div>
         </TabsContent>
 
-        {/* Email Outreach Tab */}
         <TabsContent value="email" className="space-y-4 sm:space-y-6">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
             <MetricCard
@@ -399,7 +391,6 @@ export default function Outreach() {
           </Card>
         </TabsContent>
 
-        {/* Social Outreach Tab */}
         <TabsContent value="social" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <MetricCard
@@ -495,7 +486,6 @@ export default function Outreach() {
           </div>
         </TabsContent>
 
-        {/* Call Outreach Tab */}
         <TabsContent value="calls" className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <MetricCard
