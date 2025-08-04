@@ -15,7 +15,7 @@ import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
-export default function UserButtonClient() {
+export default function UserButton() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {

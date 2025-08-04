@@ -24,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import UserButtonClient from "@/components/UserButtonClient";
+import UserButton from "@/components/UserButton";
 
 const navigation = [
   { name: "Home", href: "/home", icon: Home },
@@ -346,7 +346,7 @@ export default function Layout({ children }) {
                   <Moon className="h-5 w-5" />
                 )}
               </Button>
-              <UserButtonClient />
+              <UserButton />
             </div>
           </div>
         </div>
