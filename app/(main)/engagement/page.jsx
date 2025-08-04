@@ -24,6 +24,7 @@ import {
   Calendar,
   BarChart3,
 } from "lucide-react";
+import Image from "next/image";
 
 const emailAnalytics = {
   totalSent: 1250,
