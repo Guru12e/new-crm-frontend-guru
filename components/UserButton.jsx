@@ -23,9 +23,9 @@ export default function UserButton() {
       const res = await fetch("/api/auth/session");
       if (res.status === 200) {
         const data = await res.json();
+        localStorage.setItem("session", JSON.stringify(data));
         setUser(data.user || null);
       }
-      console.log(res);
     };
     fetchUser();
   }, []);
