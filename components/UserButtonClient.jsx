@@ -1,3 +1,5 @@
+"use client";
+
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -11,8 +13,35 @@ import { LogOut, Settings, User } from "lucide-react";
 import { Button } from "./ui/button";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
-export default function UserButtonClient({ user }) {
+export default function UserButtonClient() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const res = await fetch("/api/auth/session");
+      if (res.status === 200) {
+        const data = await res.json();
+        setUser(data.user || null);
+      }
+      console.log(res);
+    };
+    fetchUser();
+  }, []);
+
+  if (!user) {
+    return (
+      <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+        <Avatar asChild className="h-8 w-8">
+          <AvatarFallback className="bg-gradient-to-r bg-grey-400 text-black">
+            {user?.name?.charAt(0) || "U"}
+          </AvatarFallback>
+        </Avatar>
+      </Button>
+    );
+  }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>

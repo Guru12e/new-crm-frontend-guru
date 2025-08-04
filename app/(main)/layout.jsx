@@ -10,17 +10,12 @@ import {
   Megaphone,
   Calendar,
   BarChart3,
-  Settings,
   ChevronDown,
   ChevronRight,
   Menu,
   Sun,
   Moon,
   Search,
-  User,
-  Mail,
-  Phone,
-  LogOut,
   HelpCircle,
   Bot,
 } from "lucide-react";
@@ -29,7 +24,7 @@ import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import UserButton from "@/components/UserButton";
+import UserButtonClient from "@/components/UserButtonClient";
 
 const navigation = [
   { name: "Home", href: "/home", icon: Home },
@@ -332,7 +327,6 @@ export default function Layout({ children }) {
                 <HelpCircle className="h-4 w-4" />
                 <span className="hidden md:inline">Contact Us</span>
               </Button>
-
               <Button
                 variant="ghost"
                 size="sm"
@@ -340,7 +334,6 @@ export default function Layout({ children }) {
               >
                 <HelpCircle className="h-4 w-4" />
               </Button>
-
               <Button
                 variant="ghost"
                 size="sm"
@@ -353,8 +346,7 @@ export default function Layout({ children }) {
                   <Moon className="h-5 w-5" />
                 )}
               </Button>
-
-              <UserButton />
+              <UserButtonClient />
             </div>
           </div>
         </div>
@@ -367,7 +359,7 @@ export default function Layout({ children }) {
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           size="lg"
-          className="h-14 w-14 rounded-full bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
+          className="h-14 w-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-600 hover:to-purple-600 text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-110"
         >
           <Bot className="h-6 w-6" />
         </Button>
