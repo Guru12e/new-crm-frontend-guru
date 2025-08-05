@@ -1,11 +1,25 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const OnBoarding = () => {
+  const router = useRouter();
+  useEffect(() => {
+    const getUser = async () => {
+      const response = await fetch("/api/getUser");
+      if (response.status == 200) {
+        localStorage.setItem("user", JSON.stringify(await response.json()));
+        router.push("/home");
+      }
+    };
+
+    getUser();
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800">
       <div className="absolute inset-0">

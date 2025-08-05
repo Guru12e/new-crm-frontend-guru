@@ -6,10 +6,10 @@ export async function POST(request) {
     const formData = await request.json();
 
     if (
+      !formData.type ||
+      !formData.access ||
       !formData.name ||
-      !formData.number ||
-      !formData.status ||
-      !formData.session
+      !formData.userId
     ) {
       return NextResponse.json(
         { error: "Missing required fields" },
@@ -18,30 +18,16 @@ export async function POST(request) {
     }
 
     const supabase = await createClient();
-    const data = new Date();
 
-    const user = await supabase
-      .from("Companies")
-      .select("id", "email")
-      .eq("email", formData.session.user.email);
-
-    if (user) {
+    if (formData.userId) {
       const { data: companyData, error: companyError } = await supabase
-        .from("Customers")
+        .from("Lists")
         .insert({
           name: formData.name,
-          number: formData.number,
-          email: formData.email || null,
-          linkedIn: formData.linkedIn || null,
-          address: formData.address || null,
-          job: formData.job || null,
-          jobRole: formData.jobRole || null,
-          status: formData.status || "active",
-          issues: formData.issues || [],
-          price: formData.price || null,
-          customFields: formData.customFields || [],
-          created_at: formData.created_at || data.toTimeString(),
-          companyKey: user.data[0].id,
+          type: formData.type,
+          access: formData.access || "Public",
+          array: formData.array || [],
+          userKey: formData.userId,
         })
         .select();
       if (companyError) {

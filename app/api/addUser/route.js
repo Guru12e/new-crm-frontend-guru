@@ -24,9 +24,8 @@ export async function POST(request) {
     }
 
     const supabase = await createClient();
-
-    const { data: companyData, error: companyError } = await supabase
-      .from("Companies")
+    const { data: userData, error: userError } = await supabase
+      .from("Users")
       .insert({
         name: formData.name,
         email: formData.email,
@@ -42,10 +41,9 @@ export async function POST(request) {
       .select()
       .single();
 
-    if (companyError) {
-      console.log(companyError);
+    if (userError) {
       return NextResponse.json(
-        { error: `Failed to insert company: ${companyError.message}` },
+        { error: `Failed to insert user: ${userError.message}` },
         { status: 500 }
       );
     }

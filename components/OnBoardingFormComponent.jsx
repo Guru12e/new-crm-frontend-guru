@@ -259,7 +259,7 @@ export default function OnBoardingFormComponent({ session }) {
       } else {
         try {
           setLoading(true);
-          const response = await fetch("/api/addCompany", {
+          const response = await fetch("/api/addUser", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

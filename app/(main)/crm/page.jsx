@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,87 +12,35 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import {
   Users,
   TrendingUp,
   DollarSign,
   Filter,
   Search,
-  Phone,
-  Mail,
   Building2,
-  MapPin,
-  Star,
-  StarOff,
-  Eye,
-  Edit,
-  MoreHorizontal,
-  Loader2,
-  AlertCircle,
+  ListChecks,
+  Contact,
 } from "lucide-react";
-import { Label } from "@/components/ui/label";
-import { toast } from "react-toastify";
+import CustomerForm from "@/components/libs/forms/CustomerForm";
+import ContactForm from "@/components/libs/forms/ContactForm";
+import LeadForm from "@/components/libs/forms/LeadForm";
+import CompanyForm from "@/components/libs/forms/CompanyForm";
+import DealForm from "@/components/libs/forms/DealForm";
+import ListForm from "@/components/libs/forms/ListForm";
+import CustomerCard from "@/components/libs/cards/CustomerCard";
+import LeadCard from "@/components/libs/cards/LeadCard";
+import DealCard from "@/components/libs/cards/DealCard";
+import ContactCard from "@/components/libs/cards/ContactCard";
+import CompanyCard from "@/components/libs/cards/CompanyCard";
+import ListCard from "@/components/libs/cards/ListCard";
 
 const summaryStats = {
   customers: { total: 1247, new: 89, growth: 12 },
   leads: { total: 2456, qualified: 567, growth: 18 },
   deals: { total: 189, won: 67, growth: 15, value: 2340000 },
 };
-
-const mockCustomers = [
-  {
-    id: 1,
-    name: "TechFlow Inc",
-    contact: "Sarah Johnson",
-    email: "sarah.j@techflow.com",
-    phone: "+1 (555) 123-4567",
-    location: "San Francisco, CA",
-    industry: "Technology",
-    value: "$45,000",
-    status: "Active",
-    onboardedDate: "2024-01-15",
-    lastActivity: "2 days ago",
-    source: "Referral",
-  },
-  {
-    id: 2,
-    name: "DataDrive Solutions",
-    contact: "Michael Chen",
-    email: "m.chen@datadrive.io",
-    phone: "+1 (555) 987-6543",
-    location: "Austin, TX",
-    industry: "Software",
-    value: "$78,500",
-    status: "Active",
-    onboardedDate: "2024-02-20",
-    lastActivity: "1 day ago",
-    source: "Website",
-  },
-  {
-    id: 3,
-    name: "GrowthCorp",
-    contact: "Emily Rodriguez",
-    email: "emily.r@growthcorp.com",
-    phone: "+1 (555) 456-7890",
-    location: "New York, NY",
-    industry: "Marketing",
-    value: "$125,000",
-    status: "At Risk",
-    onboardedDate: "2023-11-10",
-    lastActivity: "1 week ago",
-    source: "Campaign",
-  },
-];
 
 const mockLeads = [
   {
@@ -153,112 +101,106 @@ const mockDeals = [
 ];
 
 export default function CRM() {
-  const [activeTab, setActiveTab] = useState("customers");
+  const [activeTab, setActiveTab] = useState("contacts");
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
   const [sourceFilter, setSourceFilter] = useState("");
   const [monthFilter, setMonthFilter] = useState("");
-  const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
-    email: "",
-    linkedIn: "",
-    location: "",
-    job: "",
-    jobRole: "",
-    status: "",
-    created_at: "",
-  });
-  const [errors, setErrors] = useState({});
+  const [mockCustomers, setMockCustomers] = useState([]);
+  const [contacts, setContacts] = useState([]);
+  const [mockLeads, setMockLeads] = useState([]);
+  const [mockDeals, setMockDeals] = useState([]);
+  const [mockLists, setMockLists] = useState([]);
+  const [mockCompanies, setMockCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const ErrorMessage = ({ error }) =>
-    error && (
-      <div className="flex items-center gap-1 text-red-500 text-sm mt-1">
-        <AlertCircle className="w-4 h-4" />
-        {error}
-      </div>
-    );
-
-  const updateFormData = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    setErrors((prev) => ({ ...prev, [field]: "" }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    let isValid = true;
-    if (!formData.name) {
-      errors.name = "Name is required";
-      isValid = false;
-    } else {
-      errors.name = "";
-    }
-
-    if (!formData.number) {
-      errors.number = "Number is Required";
-      isValid = false;
-    } else {
-      errors.number = "";
-    }
-
-    if (!formData.status) {
-      errors.status = "Status is Required";
-      isValid = false;
-    } else {
-      errors.status = "";
-    }
-
-    if (formData.linkedIn) {
-      if (!formData.linkedIn.includes("https://www.linkedin.com/")) {
-        errors.linkedIn = "Linked Url Required";
-        isValid = false;
-      } else {
-        errors.linkedIn = "";
-      }
-    }
-
-    if (!isValid) {
-      setLoading(false);
-      setErrors(errors);
-      return;
-    } else {
-      const session = localStorage.getItem("session");
-      const req = await fetch("/api/addCustomer", {
+  useEffect(() => {
+    const userId = JSON.parse(localStorage.getItem("user")).id;
+    const fetchContacts = async () => {
+      const response = await fetch("/api/crm/getContacts", {
         method: "POST",
-        body: JSON.stringify({
-          ...formData,
-          session: JSON.parse(session),
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
       });
-
-      if (req.status == 200) {
-        toast.success("Customer Added", {
-          autoClose: 3000,
-          position: "top-right",
-        });
-        setFormData({
-          name: "",
-          phone: "",
-          email: "",
-          linkedIn: "",
-          location: "",
-          job: "",
-          jobRole: "",
-          status: "",
-          created_at: "",
-        });
+      if (response.ok) {
+        const data = await response.json();
+        setContacts(data);
       } else {
-        toast.error("Error in Adding Customer", {
-          position: "top-right",
-          autoClose: 3000,
-        });
+        console.error("Failed to fetch contacts");
       }
-
-      setLoading(false);
-    }
-  };
+    };
+    fetchContacts();
+    const fetchCustomers = async () => {
+      const response = await fetch("/api/crm/getCustomers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMockCustomers(data);
+      } else {
+        console.error("Failed to fetch customers");
+      }
+    };
+    fetchCustomers();
+    const fetchLeads = async () => {
+      const response = await fetch("/api/crm/getLeads", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMockLeads(data);
+      } else {
+        console.error("Failed to fetch leads");
+      }
+    };
+    fetchLeads();
+    const fetchDeals = async () => {
+      const response = await fetch("/api/crm/getDeals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMockDeals(data);
+      } else {
+        console.error("Failed to fetch deals");
+      }
+    };
+    fetchDeals();
+    const fetchLists = async () => {
+      const response = await fetch("/api/crm/getLists", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMockLists(data);
+      } else {
+        console.error("Failed to fetch lists");
+      }
+    };
+    fetchLists();
+    const fetchCompanies = async () => {
+      const response = await fetch("/api/crm/getCompanies", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId }),
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setMockCompanies(data);
+      } else {
+        console.error("Failed to fetch companies");
+      }
+    };
+    fetchCompanies();
+  }, []);
 
   const SummaryCard = ({ title, total, subtitle, growth, icon: Icon }) => (
     <Card className="backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 border-white/20">
@@ -288,259 +230,6 @@ export default function CRM() {
     </Card>
   );
 
-  const CustomerCard = ({ customer }) => (
-    <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20 hover:bg-white/80 dark:hover:bg-slate-800/60 transition-all duration-300 group">
-      <CardContent className="p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
-            <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
-              <AvatarFallback className="bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm">
-                {customer.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white break-words">
-                {customer.name}
-              </h3>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 break-words">
-                {customer.contact}
-              </p>
-              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-2 text-sm text-slate-500 dark:text-slate-400 gap-1 sm:gap-0">
-                <div className="flex items-center">
-                  <Building2 className="h-4 w-4 mr-1 flex-shrink-0" />
-                  <span className="break-words">{customer.industry}</span>
-                </div>
-                <div className="flex items-center">
-                  <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
-                  <span className="break-words">{customer.location}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2">
-            <div className="text-left sm:text-right">
-              <div className="text-base sm:text-lg font-bold text-green-600">
-                {customer.value}
-              </div>
-              <Badge
-                variant={
-                  customer.status === "Active"
-                    ? "default"
-                    : customer.status === "At Risk"
-                    ? "destructive"
-                    : "secondary"
-                }
-              >
-                {customer.status}
-              </Badge>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 break-words">
-                Last activity: {customer.lastActivity}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 gap-3 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-          <div className="flex flex-wrap gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-white/50 dark:bg-slate-800/50 border-white/20 flex-1 sm:flex-none"
-            >
-              <Mail className="h-4 w-4 mr-1" />
-              Email
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-white/50 dark:bg-slate-800/50 border-white/20 flex-1 sm:flex-none"
-            >
-              <Phone className="h-4 w-4 mr-1" />
-              Call
-            </Button>
-          </div>
-          <div className="flex space-x-2 justify-center sm:justify-end">
-            <Button size="sm" variant="ghost" className="p-2">
-              <Eye className="h-4 w-4" />
-            </Button>
-            <Button size="sm" variant="ghost" className="p-2">
-              <Edit className="h-4 w-4" />
-            </Button>
-            <Button size="sm" variant="ghost" className="p-2">
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-
-  const LeadCard = ({ lead }) => (
-    <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20 hover:bg-white/80 dark:hover:bg-slate-800/60 transition-all duration-300 group">
-      <CardContent className="p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
-            <Avatar className="h-10 w-10 sm:h-12 sm:w-12 flex-shrink-0">
-              <AvatarFallback className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm">
-                {lead.name
-                  .split(" ")
-                  .map((n) => n[0])
-                  .join("")}
-              </AvatarFallback>
-            </Avatar>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white break-words">
-                {lead.name}
-              </h3>
-              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 break-words">
-                {lead.contact}
-              </p>
-              <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-2 text-sm text-slate-500 dark:text-slate-400 gap-1 sm:gap-0">
-                <div className="flex items-center">
-                  <Building2 className="h-4 w-4 mr-1 flex-shrink-0" />
-                  <span className="break-words">{lead.industry}</span>
-                </div>
-                <div className="flex items-center">
-                  <MapPin className="h-4 w-4 mr-1 flex-shrink-0" />
-                  <span className="break-words">{lead.location}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2">
-            <div className="text-left sm:text-right">
-              <div className="text-base sm:text-lg font-bold text-blue-600">
-                Score: {lead.score}
-              </div>
-              <Badge
-                variant={
-                  lead.status === "Hot"
-                    ? "destructive"
-                    : lead.status === "Qualified"
-                    ? "default"
-                    : "secondary"
-                }
-              >
-                {lead.status}
-              </Badge>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 break-words">
-                Created: {lead.created}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 gap-3 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-          <div className="flex flex-wrap gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-white/50 dark:bg-slate-800/50 border-white/20 flex-1 sm:flex-none"
-            >
-              <Mail className="h-4 w-4 mr-1" />
-              Email
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-white/50 dark:bg-slate-800/50 border-white/20 flex-1 sm:flex-none"
-            >
-              <Phone className="h-4 w-4 mr-1" />
-              Call
-            </Button>
-            <Button
-              size="sm"
-              className="bg-gradient-to-r from-blue-500 to-purple-500 text-white flex-1 sm:flex-none"
-            >
-              Convert
-            </Button>
-          </div>
-          <div className="flex space-x-2 justify-center sm:justify-end">
-            <Button size="sm" variant="ghost" className="p-2">
-              <Eye className="h-4 w-4" />
-            </Button>
-            <Button size="sm" variant="ghost" className="p-2">
-              <Edit className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-
-  const DealCard = ({ deal }) => (
-    <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20 hover:bg-white/80 dark:hover:bg-slate-800/60 transition-all duration-300 group">
-      <CardContent className="p-4 sm:p-6">
-        <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-          <div className="flex-1 min-w-0">
-            <h3 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white break-words">
-              {deal.name}
-            </h3>
-            <p className="text-sm sm:text-base text-slate-600 dark:text-slate-400 break-words">
-              {deal.company}
-            </p>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:space-x-4 mt-2 text-sm text-slate-500 dark:text-slate-400 gap-1 sm:gap-0">
-              <span className="break-words">Owner: {deal.owner}</span>
-              <span className="break-words">Source: {deal.source}</span>
-            </div>
-          </div>
-          <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-2">
-            <div className="text-left sm:text-right">
-              <div className="text-lg sm:text-xl font-bold text-green-600">
-                {deal.value}
-              </div>
-              <Badge variant="outline">{deal.stage}</Badge>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 break-words">
-                Close: {deal.closeDate}
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="mt-4">
-          <div className="flex items-center justify-between text-sm mb-1">
-            <span className="text-slate-600 dark:text-slate-400">
-              Probability
-            </span>
-            <span className="font-medium">{deal.probability}%</span>
-          </div>
-          <div className="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
-            <div
-              className="bg-gradient-to-r from-green-500 to-green-600 h-2 rounded-full transition-all duration-500"
-              style={{ width: `${deal.probability}%` }}
-            ></div>
-          </div>
-        </div>
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-4 gap-3 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-          <div className="flex flex-wrap gap-2">
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-white/50 dark:bg-slate-800/50 border-white/20 flex-1 sm:flex-none"
-            >
-              Update Stage
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              className="bg-white/50 dark:bg-slate-800/50 border-white/20 flex-1 sm:flex-none"
-            >
-              Add Note
-            </Button>
-          </div>
-          <div className="flex space-x-2 justify-center sm:justify-end">
-            <Button size="sm" variant="ghost" className="p-2">
-              <Eye className="h-4 w-4" />
-            </Button>
-            <Button size="sm" variant="ghost" className="p-2">
-              <Edit className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </CardContent>
-    </Card>
-  );
-
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
@@ -553,277 +242,19 @@ export default function CRM() {
           </p>
         </div>
 
-        <Dialog>
-          <DialogTrigger>
-            <div className="bg-gradient-to-r px-3 py-2 rounded-xl from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white w-full sm:w-auto">
-              Add New Customer
-            </div>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New Customer</DialogTitle>
-              <DialogDescription>
-                <div className="grid p-3 grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <Label
-                      htmlFor="name"
-                      className="mb-2 text-slate-700 dark:text-slate-300"
-                    >
-                      Name
-                    </Label>
-                    <Input
-                      id="name"
-                      value={formData.name}
-                      onChange={(e) => updateFormData("name", e.target.value)}
-                      className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
-                        errors.name ? "border-red-500" : ""
-                      }`}
-                      placeholder="Customer full name"
-                    />
-                    <ErrorMessage error={errors.name} />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="email"
-                      className="mb-2 text-slate-700 dark:text-slate-300"
-                    >
-                      Email
-                    </Label>
-                    <Input
-                      id="email"
-                      type="email"
-                      value={formData.email}
-                      onChange={(e) => updateFormData("email", e.target.value)}
-                      className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
-                        errors.email ? "border-red-500" : ""
-                      }`}
-                      placeholder="customer@email.com"
-                    />
-                    <ErrorMessage error={errors.email} />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="number"
-                      className="mb-2 text-slate-700 dark:text-slate-300"
-                    >
-                      Number
-                    </Label>
-                    <Input
-                      id="number"
-                      type="text"
-                      value={formData.number}
-                      onChange={(e) => updateFormData("number", e.target.value)}
-                      className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
-                        errors.number ? "border-red-500" : ""
-                      }`}
-                      placeholder="+91 12345 67890"
-                    />
-                    <ErrorMessage error={errors.number} />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="linkedIn"
-                      className="mb-2 text-slate-700 dark:text-slate-300"
-                    >
-                      LinkedIn Profile
-                    </Label>
-                    <Input
-                      id="linkedIn"
-                      type="url"
-                      value={formData.linkedIn}
-                      onChange={(e) =>
-                        updateFormData("linkedIn", e.target.value)
-                      }
-                      className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
-                        errors.linkedIn ? "border-red-500" : ""
-                      }`}
-                      placeholder="LinkedIn profile URL"
-                    />
-                    <ErrorMessage error={errors.linkedIn} />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="industry"
-                      className="mb-2 text-slate-700 dark:text-slate-300"
-                    >
-                      Industry
-                    </Label>
-                    <Select
-                      value={formData.job}
-                      onValueChange={(value) => updateFormData("job", value)}
-                      className={errors.job ? "border-red-500" : ""}
-                    >
-                      <SelectTrigger
-                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white ${
-                          errors.job ? "border-red-500" : ""
-                        }`}
-                      >
-                        <SelectValue placeholder="Select industry" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="technology">Technology</SelectItem>
-                        <SelectItem value="healthcare">Healthcare</SelectItem>
-                        <SelectItem value="finance">Finance</SelectItem>
-                        <SelectItem value="retail">Retail</SelectItem>
-                        <SelectItem value="manufacturing">
-                          Manufacturing
-                        </SelectItem>
-                        <SelectItem value="education">Education</SelectItem>
-                        <SelectItem value="other">Other</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <ErrorMessage error={errors.job} />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="jobRole"
-                      className="mb-2 text-slate-700 dark:text-slate-300"
-                    >
-                      Company Website
-                    </Label>
-                    <Input
-                      id="companyWebsite"
-                      type="url"
-                      value={formData.jobRole}
-                      onChange={(e) =>
-                        updateFormData("jobRole", e.target.value)
-                      }
-                      className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
-                        errors.jobRole ? "border-red-500" : ""
-                      }`}
-                      placeholder="https://yourcompany.com"
-                    />
-                    <ErrorMessage error={errors.jobRole} />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="address"
-                      className="mb-2 text-slate-700 dark:text-slate-300"
-                    >
-                      Customer Address
-                    </Label>
-                    <Input
-                      id="address"
-                      type="url"
-                      value={formData.address}
-                      onChange={(e) =>
-                        updateFormData("address", e.target.value)
-                      }
-                      className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
-                        errors.address ? "border-red-500" : ""
-                      }`}
-                      placeholder="Customer Address"
-                    />
-                    <ErrorMessage error={errors.address} />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="status"
-                      className="mb-2 text-slate-700 dark:text-slate-300"
-                    >
-                      Customer Status
-                    </Label>
-                    <Select
-                      value={formData.status}
-                      onValueChange={(value) => updateFormData("status", value)}
-                      className={errors.status ? "border-red-500" : ""}
-                    >
-                      <SelectTrigger
-                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white ${
-                          errors.status ? "border-red-500" : ""
-                        }`}
-                      >
-                        <SelectValue placeholder="Select Customer Status" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="active">Active</SelectItem>
-                        <SelectItem value="inactive">Inactive</SelectItem>
-                        <SelectItem value="at-risk">At Risk</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <ErrorMessage error={errors.status} />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="price"
-                      className="mb-2 text-slate-700 dark:text-slate-300"
-                    >
-                      Customer Price
-                    </Label>
-                    <Input
-                      id="price"
-                      type="url"
-                      value={formData.price}
-                      onChange={(e) => updateFormData("price", e.target.value)}
-                      className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
-                        errors.price ? "border-red-500" : ""
-                      }`}
-                      placeholder="Customer Price"
-                    />
-                    <ErrorMessage error={errors.price} />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="issue"
-                      className="mb-2 text-slate-700 dark:text-slate-300"
-                    >
-                      Customer issue
-                    </Label>
-                    <Input
-                      id="price"
-                      type="text"
-                      value={formData.issue}
-                      onChange={(e) => updateFormData("issue", e.target.value)}
-                      className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
-                        errors.issue ? "border-red-500" : ""
-                      }`}
-                      placeholder="Customer issue"
-                    />
-                    <ErrorMessage error={errors.issue} />
-                  </div>
-                  <div>
-                    <Label
-                      htmlFor="issue"
-                      className="mb-2 text-slate-700 dark:text-slate-300"
-                    >
-                      Customer On-boarded Date
-                    </Label>
-                    <Input
-                      id="onboarded-date"
-                      type="date"
-                      value={formData.created_at}
-                      onChange={(e) =>
-                        updateFormData("created_at", e.target.value)
-                      }
-                      className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
-                        errors.created_at ? "border-red-500" : ""
-                      }`}
-                      placeholder="Customer On Boarded Date"
-                    />
-                    <ErrorMessage error={errors.created_at} />
-                  </div>
-                </div>
-
-                <div className="flex justify-between pt-6">
-                  <Button
-                    disabled={loading}
-                    onClick={handleSubmit}
-                    className={`${
-                      loading
-                        ? "bg-gray-400 hover:bg-gray-500"
-                        : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-                    }  cursor-pointer text-white`}
-                  >
-                    {loading && (
-                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    )}
-                    Add Customer
-                  </Button>
-                </div>
-              </DialogDescription>
-            </DialogHeader>
-          </DialogContent>
-        </Dialog>
+        <Sheet className="relative w-max">
+          <SheetTrigger asChild>
+            <Button className="bg-gradient-to-r px-3 py-2 rounded-xl from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white w-full sm:w-auto">
+              Add New {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)}
+            </Button>
+          </SheetTrigger>
+          {activeTab === "contacts" && <ContactForm className="p-6" />}
+          {activeTab === "customers" && <CustomerForm className="p-6" />}
+          {activeTab === "leads" && <LeadForm className="p-6" />}
+          {activeTab === "deals" && <DealForm className="p-6" />}
+          {activeTab === "companies" && <CompanyForm className="p-6" />}
+          {activeTab === "lists" && <ListForm className="p-6" />}
+        </Sheet>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
@@ -855,7 +286,26 @@ export default function CRM() {
         onValueChange={setActiveTab}
         className="space-y-6"
       >
-        <TabsList className="grid w-full grid-cols-3 backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 border border-white/20">
+        <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 space-y-2 mb-10 backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 border border-white/20">
+          <TabsTrigger value="contacts" className="flex items-center space-x-2">
+            <Contact className="w-4 h-4" />
+            <span>Contacts</span>
+          </TabsTrigger>
+          <TabsTrigger value="leads" className="flex items-center space-x-2">
+            <TrendingUp className="w-4 h-4" />
+            <span>Leads</span>
+          </TabsTrigger>
+          <TabsTrigger
+            value="companies"
+            className="flex items-center space-x-2"
+          >
+            <Building2 className="w-4 h-4" />
+            <span>Companies</span>
+          </TabsTrigger>
+          <TabsTrigger value="deals" className="flex items-center space-x-2">
+            <DollarSign className="w-4 h-4" />
+            <span>Deals</span>
+          </TabsTrigger>
           <TabsTrigger
             value="customers"
             className="flex items-center space-x-2"
@@ -863,13 +313,9 @@ export default function CRM() {
             <Users className="w-4 h-4" />
             <span>Customers</span>
           </TabsTrigger>
-          <TabsTrigger value="leads" className="flex items-center space-x-2">
-            <TrendingUp className="w-4 h-4" />
-            <span>Leads</span>
-          </TabsTrigger>
-          <TabsTrigger value="deals" className="flex items-center space-x-2">
-            <DollarSign className="w-4 h-4" />
-            <span>Deals</span>
+          <TabsTrigger value="lists" className="flex items-center space-x-2">
+            <ListChecks className="w-4 h-4" />
+            <span>Lists</span>
           </TabsTrigger>
         </TabsList>
 
@@ -932,6 +378,13 @@ export default function CRM() {
           </CardContent>
         </Card>
 
+        <TabsContent value="contacts" className="space-y-6">
+          <div className="grid grid-cols-1 gap-6">
+            {contacts.map((contact) => (
+              <ContactCard key={contact.id} contact={contact} />
+            ))}
+          </div>
+        </TabsContent>
         <TabsContent value="customers" className="space-y-6">
           <div className="grid grid-cols-1 gap-6">
             {mockCustomers.map((customer) => (
@@ -939,7 +392,6 @@ export default function CRM() {
             ))}
           </div>
         </TabsContent>
-
         <TabsContent value="leads" className="space-y-6">
           <div className="grid grid-cols-1 gap-6">
             {mockLeads.map((lead) => (
@@ -947,11 +399,24 @@ export default function CRM() {
             ))}
           </div>
         </TabsContent>
-
         <TabsContent value="deals" className="space-y-6">
           <div className="grid grid-cols-1 gap-6">
             {mockDeals.map((deal) => (
               <DealCard key={deal.id} deal={deal} />
+            ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="companies" className="space-y-6">
+          <div className="grid grid-cols-1 gap-6">
+            {mockCompanies.map((company) => (
+              <CompanyCard key={company.id} company={company} />
+            ))}
+          </div>
+        </TabsContent>
+        <TabsContent value="lists" className="space-y-6">
+          <div className="grid grid-cols-1 gap-6">
+            {mockLists.map((list) => (
+              <ListCard key={list.id} list={list} />
             ))}
           </div>
         </TabsContent>
