@@ -818,7 +818,7 @@ export default function CRM() {
                       <ErrorMessage error={errors.created_at} />
                     </div>
                   </div>
-                   <div
+                  <div
                     className={`${
                       activeTab == "Leads" ? "grid" : "hidden"
                     } p-3 grid-cols-1 md:grid-cols-2 gap-4`}
@@ -957,6 +957,26 @@ export default function CRM() {
                     </div>
                     <div>
                       <Label
+                        htmlFor="company"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
+                        Company
+                      </Label>
+                      <Input
+                        id="company"
+                        value={formData.company}
+                        onChange={(e) =>
+                          updateFormData("company", e.target.value)
+                        }
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.income ? "border-red-500" : ""
+                        }`}
+                        placeholder="Lead Company"
+                      />
+                      <ErrorMessage error={errors.income} />
+                    </div>
+                    <div>
+                      <Label
                         htmlFor="income"
                         className="mb-2 text-slate-700 dark:text-slate-300"
                       >
@@ -998,10 +1018,51 @@ export default function CRM() {
                     </div>
                     <div>
                       <Label
+                        htmlFor="status"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
+                        Lead Status
+                      </Label>
+                      <Select
+                        value={formData.status}
+                        onValueChange={(value) =>
+                          updateFormData("status", value)
+                        }
+                        className={errors.status ? "border-red-500" : ""}
+                      >
+                        <SelectTrigger
+                          className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white ${
+                            errors.status ? "border-red-500" : ""
+                          }`}
+                        >
+                          <SelectValue placeholder="Select Lead Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="new">New</SelectItem>
+                          <SelectItem value="in-progress">
+                            In progress
+                          </SelectItem>
+                          <SelectItem value="contact attempted">
+                            Contact attempted
+                          </SelectItem>
+                          <SelectItem value="contacted">Contacted</SelectItem>
+                          <SelectItem value="qualified">Qualified</SelectItem>
+                          <SelectItem value="unqualified">
+                            Unqualified
+                          </SelectItem>
+                          <SelectItem value="meeting booked">
+                            Meeting booked
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <ErrorMessage error={errors.status} />
+                    </div>
+                    <div>
+                      <Label
                         htmlFor="address"
                         className="mb-2 text-slate-700 dark:text-slate-300"
                       >
-                        Lead Address
+                        Address
                       </Label>
                       <Input
                         id="address"
@@ -1017,16 +1078,45 @@ export default function CRM() {
                       />
                       <ErrorMessage error={errors.address} />
                     </div>
-                  </div>
-                  <div className={`${activeTab == "Deals" ? "grid" : "hidden"} p-3 grid-cols-1 md:grid-cols-2 gap-4`}>
                     <div>
-                      <Label htmlFor="dealName" className="mb-2 text-slate-700 dark:text-slate-300">
+                      <Label
+                        htmlFor="description"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
+                        Description
+                      </Label>
+                      <Input
+                        id="description"
+                        value={formData.description}
+                        onChange={(e) =>
+                          updateFormData("description", e.target.value)
+                        }
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.income ? "border-red-500" : ""
+                        }`}
+                        placeholder="Lead description"
+                      />
+                      <ErrorMessage error={errors.income} />
+                    </div>
+                  </div>
+                  <div
+                    className={`${
+                      activeTab == "Deals" ? "grid" : "hidden"
+                    } p-3 grid-cols-1 md:grid-cols-2 gap-4`}
+                  >
+                    <div>
+                      <Label
+                        htmlFor="dealName"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
                         Deal Name
                       </Label>
                       <Input
                         id="dealName"
                         value={formData.dealName}
-                        onChange={(e) => updateFormData("dealName", e.target.value)}
+                        onChange={(e) =>
+                          updateFormData("dealName", e.target.value)
+                        }
                         className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
                           errors.dealName ? "border-red-500" : ""
                         }`}
@@ -1036,14 +1126,19 @@ export default function CRM() {
                     </div>
 
                     <div>
-                      <Label htmlFor="dealPhone" className="mb-2 text-slate-700 dark:text-slate-300">
+                      <Label
+                        htmlFor="dealPhone"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
                         Phone Number
                       </Label>
                       <Input
                         id="dealPhone"
                         type="text"
                         value={formData.dealPhone}
-                        onChange={(e) => updateFormData("dealPhone", e.target.value)}
+                        onChange={(e) =>
+                          updateFormData("dealPhone", e.target.value)
+                        }
                         className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
                           errors.dealPhone ? "border-red-500" : ""
                         }`}
@@ -1053,14 +1148,19 @@ export default function CRM() {
                     </div>
 
                     <div>
-                      <Label htmlFor="dealTitle" className="mb-2 text-slate-700 dark:text-slate-300">
+                      <Label
+                        htmlFor="dealTitle"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
                         Deal Title
                       </Label>
                       <Input
                         id="dealTitle"
                         type="text"
                         value={formData.dealTitle}
-                        onChange={(e) => updateFormData("dealTitle", e.target.value)}
+                        onChange={(e) =>
+                          updateFormData("dealTitle", e.target.value)
+                        }
                         className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
                           errors.dealTitle ? "border-red-500" : ""
                         }`}
@@ -1070,12 +1170,17 @@ export default function CRM() {
                     </div>
 
                     <div>
-                      <Label htmlFor="dealStatus" className="mb-2 text-slate-700 dark:text-slate-300">
+                      <Label
+                        htmlFor="dealStatus"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
                         Deal Status
                       </Label>
                       <Select
                         value={formData.dealStatus}
-                        onValueChange={(value) => updateFormData("dealStatus", value)}
+                        onValueChange={(value) =>
+                          updateFormData("dealStatus", value)
+                        }
                         className={errors.dealStatus ? "border-red-500" : ""}
                       >
                         <SelectTrigger
@@ -1087,11 +1192,21 @@ export default function CRM() {
                         </SelectTrigger>
                         <SelectContent>
                           <SelectItem value="new">New</SelectItem>
-                          <SelectItem value="proposal_sent">Proposal Sent</SelectItem>
-                          <SelectItem value="negotiation">Negotiation</SelectItem>
-                          <SelectItem value="contract_sent">Contract Sent</SelectItem>
-                          <SelectItem value="closed_won">Closed - Won</SelectItem>
-                          <SelectItem value="closed_lost">Closed - Lost</SelectItem>
+                          <SelectItem value="proposal_sent">
+                            Proposal Sent
+                          </SelectItem>
+                          <SelectItem value="negotiation">
+                            Negotiation
+                          </SelectItem>
+                          <SelectItem value="contract_sent">
+                            Contract Sent
+                          </SelectItem>
+                          <SelectItem value="closed_won">
+                            Closed - Won
+                          </SelectItem>
+                          <SelectItem value="closed_lost">
+                            Closed - Lost
+                          </SelectItem>
                           <SelectItem value="on_hold">On Hold</SelectItem>
                           <SelectItem value="abandoned">Abandoned</SelectItem>
                         </SelectContent>
@@ -1100,14 +1215,19 @@ export default function CRM() {
                     </div>
 
                     <div>
-                      <Label htmlFor="dealAmount" className="mb-2 text-slate-700 dark:text-slate-300">
+                      <Label
+                        htmlFor="dealAmount"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
                         Deal Amount / Value
                       </Label>
                       <Input
                         id="dealAmount"
                         type="number"
                         value={formData.dealAmount}
-                        onChange={(e) => updateFormData("dealAmount", e.target.value)}
+                        onChange={(e) =>
+                          updateFormData("dealAmount", e.target.value)
+                        }
                         className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
                           errors.dealAmount ? "border-red-500" : ""
                         }`}
@@ -1117,14 +1237,19 @@ export default function CRM() {
                     </div>
 
                     <div>
-                      <Label htmlFor="expectedCloseDate" className="mb-2 text-slate-700 dark:text-slate-300">
+                      <Label
+                        htmlFor="expectedCloseDate"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
                         Expected Close Date
                       </Label>
                       <Input
                         id="expectedCloseDate"
                         type="date"
                         value={formData.expectedCloseDate}
-                        onChange={(e) => updateFormData("expectedCloseDate", e.target.value)}
+                        onChange={(e) =>
+                          updateFormData("expectedCloseDate", e.target.value)
+                        }
                         className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
                           errors.expectedCloseDate ? "border-red-500" : ""
                         }`}
@@ -1132,7 +1257,6 @@ export default function CRM() {
                       />
                       <ErrorMessage error={errors.expectedCloseDate} />
                     </div>
-
                   </div>
                 </>
                 <div className="flex justify-between pt-6">
