@@ -818,15 +818,321 @@ export default function CRM() {
                       <ErrorMessage error={errors.created_at} />
                     </div>
                   </div>
-                  <div
-                    className={`${activeTab == "Leads" ? "grid" : "hidden"}`}
+                   <div
+                    className={`${
+                      activeTab == "Leads" ? "grid" : "hidden"
+                    } p-3 grid-cols-1 md:grid-cols-2 gap-4`}
                   >
-                    Leads
+                    <div>
+                      <Label
+                        htmlFor="name"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
+                        Name
+                      </Label>
+                      <Input
+                        id="name"
+                        value={formData.name}
+                        onChange={(e) => updateFormData("name", e.target.value)}
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.name ? "border-red-500" : ""
+                        }`}
+                        placeholder="Lead's full name"
+                      />
+                      <ErrorMessage error={errors.name} />
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="email"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
+                        Email
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={(e) =>
+                          updateFormData("email", e.target.value)
+                        }
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.email ? "border-red-500" : ""
+                        }`}
+                        placeholder="lead@email.com"
+                      />
+                      <ErrorMessage error={errors.email} />
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="number"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
+                        Number
+                      </Label>
+                      <Input
+                        id="number"
+                        type="text"
+                        value={formData.number}
+                        onChange={(e) =>
+                          updateFormData("number", e.target.value)
+                        }
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.number ? "border-red-500" : ""
+                        }`}
+                        placeholder="+91 12345 67890"
+                      />
+                      <ErrorMessage error={errors.number} />
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="age"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
+                        Age
+                      </Label>
+                      <Input
+                        id="age"
+                        value={formData.age}
+                        onChange={(e) => updateFormData("age", e.target.value)}
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.age ? "border-red-500" : ""
+                        }`}
+                        placeholder="Lead's age"
+                      />
+                      <ErrorMessage error={errors.age} />
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="linkedIn"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
+                        LinkedIn Profile
+                      </Label>
+                      <Input
+                        id="linkedIn"
+                        type="url"
+                        value={formData.linkedIn}
+                        onChange={(e) =>
+                          updateFormData("linkedIn", e.target.value)
+                        }
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.linkedIn ? "border-red-500" : ""
+                        }`}
+                        placeholder="LinkedIn profile URL"
+                      />
+                      <ErrorMessage error={errors.linkedIn} />
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="industry"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
+                        Industry
+                      </Label>
+                      <Select
+                        value={formData.job}
+                        onValueChange={(value) => updateFormData("job", value)}
+                        className={errors.job ? "border-red-500" : ""}
+                      >
+                        <SelectTrigger
+                          className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white ${
+                            errors.job ? "border-red-500" : ""
+                          }`}
+                        >
+                          <SelectValue placeholder="Select industry" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="technology">Technology</SelectItem>
+                          <SelectItem value="healthcare">Healthcare</SelectItem>
+                          <SelectItem value="finance">Finance</SelectItem>
+                          <SelectItem value="retail">Retail</SelectItem>
+                          <SelectItem value="manufacturing">
+                            Manufacturing
+                          </SelectItem>
+                          <SelectItem value="education">Education</SelectItem>
+                          <SelectItem value="other">Other</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <ErrorMessage error={errors.job} />
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="income"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
+                        Income
+                      </Label>
+                      <Input
+                        id="income"
+                        value={formData.income}
+                        onChange={(e) =>
+                          updateFormData("income", e.target.value)
+                        }
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.income ? "border-red-500" : ""
+                        }`}
+                        placeholder="Lead's income"
+                      />
+                      <ErrorMessage error={errors.income} />
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="jobRole"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
+                        Company Website
+                      </Label>
+                      <Input
+                        id="companyWebsite"
+                        type="url"
+                        value={formData.jobRole}
+                        onChange={(e) =>
+                          updateFormData("jobRole", e.target.value)
+                        }
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.jobRole ? "border-red-500" : ""
+                        }`}
+                        placeholder="https://yourcompany.com"
+                      />
+                      <ErrorMessage error={errors.jobRole} />
+                    </div>
+                    <div>
+                      <Label
+                        htmlFor="address"
+                        className="mb-2 text-slate-700 dark:text-slate-300"
+                      >
+                        Lead Address
+                      </Label>
+                      <Input
+                        id="address"
+                        type="url"
+                        value={formData.address}
+                        onChange={(e) =>
+                          updateFormData("address", e.target.value)
+                        }
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.address ? "border-red-500" : ""
+                        }`}
+                        placeholder="Lead's Address"
+                      />
+                      <ErrorMessage error={errors.address} />
+                    </div>
                   </div>
-                  <div
-                    className={`${activeTab == "Deals" ? "grid" : "hidden"}`}
-                  >
-                    Deals
+                  <div className={`${activeTab == "Deals" ? "grid" : "hidden"} p-3 grid-cols-1 md:grid-cols-2 gap-4`}>
+                    <div>
+                      <Label htmlFor="dealName" className="mb-2 text-slate-700 dark:text-slate-300">
+                        Deal Name
+                      </Label>
+                      <Input
+                        id="dealName"
+                        value={formData.dealName}
+                        onChange={(e) => updateFormData("dealName", e.target.value)}
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.dealName ? "border-red-500" : ""
+                        }`}
+                        placeholder="Full name of the deal"
+                      />
+                      <ErrorMessage error={errors.dealName} />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="dealPhone" className="mb-2 text-slate-700 dark:text-slate-300">
+                        Phone Number
+                      </Label>
+                      <Input
+                        id="dealPhone"
+                        type="text"
+                        value={formData.dealPhone}
+                        onChange={(e) => updateFormData("dealPhone", e.target.value)}
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.dealPhone ? "border-red-500" : ""
+                        }`}
+                        placeholder="+91 98765 43210"
+                      />
+                      <ErrorMessage error={errors.dealPhone} />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="dealTitle" className="mb-2 text-slate-700 dark:text-slate-300">
+                        Deal Title
+                      </Label>
+                      <Input
+                        id="dealTitle"
+                        type="text"
+                        value={formData.dealTitle}
+                        onChange={(e) => updateFormData("dealTitle", e.target.value)}
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.dealTitle ? "border-red-500" : ""
+                        }`}
+                        placeholder="e.g., CRM Subscription - 1 Year"
+                      />
+                      <ErrorMessage error={errors.dealTitle} />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="dealStatus" className="mb-2 text-slate-700 dark:text-slate-300">
+                        Deal Status
+                      </Label>
+                      <Select
+                        value={formData.dealStatus}
+                        onValueChange={(value) => updateFormData("dealStatus", value)}
+                        className={errors.dealStatus ? "border-red-500" : ""}
+                      >
+                        <SelectTrigger
+                          className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white ${
+                            errors.dealStatus ? "border-red-500" : ""
+                          }`}
+                        >
+                          <SelectValue placeholder="Select Deal Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="new">New</SelectItem>
+                          <SelectItem value="proposal_sent">Proposal Sent</SelectItem>
+                          <SelectItem value="negotiation">Negotiation</SelectItem>
+                          <SelectItem value="contract_sent">Contract Sent</SelectItem>
+                          <SelectItem value="closed_won">Closed - Won</SelectItem>
+                          <SelectItem value="closed_lost">Closed - Lost</SelectItem>
+                          <SelectItem value="on_hold">On Hold</SelectItem>
+                          <SelectItem value="abandoned">Abandoned</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <ErrorMessage error={errors.dealStatus} />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="dealAmount" className="mb-2 text-slate-700 dark:text-slate-300">
+                        Deal Amount / Value
+                      </Label>
+                      <Input
+                        id="dealAmount"
+                        type="number"
+                        value={formData.dealAmount}
+                        onChange={(e) => updateFormData("dealAmount", e.target.value)}
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.dealAmount ? "border-red-500" : ""
+                        }`}
+                        placeholder="₹50000"
+                      />
+                      <ErrorMessage error={errors.dealAmount} />
+                    </div>
+
+                    <div>
+                      <Label htmlFor="expectedCloseDate" className="mb-2 text-slate-700 dark:text-slate-300">
+                        Expected Close Date
+                      </Label>
+                      <Input
+                        id="expectedCloseDate"
+                        type="date"
+                        value={formData.expectedCloseDate}
+                        onChange={(e) => updateFormData("expectedCloseDate", e.target.value)}
+                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
+                          errors.expectedCloseDate ? "border-red-500" : ""
+                        }`}
+                        placeholder="YYYY-MM-DD"
+                      />
+                      <ErrorMessage error={errors.expectedCloseDate} />
+                    </div>
+
                   </div>
                 </>
                 <div className="flex justify-between pt-6">
