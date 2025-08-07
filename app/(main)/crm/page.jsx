@@ -35,6 +35,7 @@ import DealCard from "@/components/libs/cards/DealCard";
 import ContactCard from "@/components/libs/cards/ContactCard";
 import CompanyCard from "@/components/libs/cards/CompanyCard";
 import ListCard from "@/components/libs/cards/ListCard";
+import { useRouter } from "next/navigation";
 
 const summaryStats = {
   customers: { total: 1247, new: 89, growth: 12 },
@@ -113,9 +114,15 @@ export default function CRM() {
   const [mockLists, setMockLists] = useState([]);
   const [mockCompanies, setMockCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const userId = JSON.parse(localStorage.getItem("user")).id;
+
+    if (!userId) {
+      router.push("/");
+    }
+
     const fetchContacts = async () => {
       const response = await fetch("/api/crm/getContacts", {
         method: "POST",
@@ -194,6 +201,7 @@ export default function CRM() {
       });
       if (response.ok) {
         const data = await response.json();
+        console.log(data);
         setMockCompanies(data);
       } else {
         console.error("Failed to fetch companies");
@@ -379,42 +387,42 @@ export default function CRM() {
         </Card>
 
         <TabsContent value="contacts" className="space-y-6">
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {contacts.map((contact) => (
               <ContactCard key={contact.id} contact={contact} />
             ))}
           </div>
         </TabsContent>
         <TabsContent value="customers" className="space-y-6">
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {mockCustomers.map((customer) => (
               <CustomerCard key={customer.id} customer={customer} />
             ))}
           </div>
         </TabsContent>
         <TabsContent value="leads" className="space-y-6">
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {mockLeads.map((lead) => (
               <LeadCard key={lead.id} lead={lead} />
             ))}
           </div>
         </TabsContent>
         <TabsContent value="deals" className="space-y-6">
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {mockDeals.map((deal) => (
               <DealCard key={deal.id} deal={deal} />
             ))}
           </div>
         </TabsContent>
         <TabsContent value="companies" className="space-y-6">
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {mockCompanies.map((company) => (
               <CompanyCard key={company.id} company={company} />
             ))}
           </div>
         </TabsContent>
         <TabsContent value="lists" className="space-y-6">
-          <div className="grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {mockLists.map((list) => (
               <ListCard key={list.id} list={list} />
             ))}

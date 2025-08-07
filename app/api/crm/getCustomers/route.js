@@ -16,7 +16,11 @@ export async function POST(request) {
 
     const { data: customers, error } = await supabase
       .from("Customers")
-      .select("*")
+      .select(
+        `*
+        , Users: userKey (name)
+      `
+      )
       .eq("userKey", formData.userId);
 
     if (error) {

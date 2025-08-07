@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -66,6 +66,18 @@ const priorityTasks = [
 
 export default function Home() {
   const [chartsMode, setChartsMode] = useState("graphic");
+
+  useEffect(() => {
+    const getUser = async () => {
+      const user = await fetch("/api/getUser");
+
+      if (user.status === 200) {
+        localStorage.setItem("user", JSON.stringify(await user.json()));
+      }
+    };
+
+    getUser();
+  }, []);
 
   const MetricCard = ({ title, value, change, icon: Icon }) => (
     <Card className="backdrop-blur-sm bg-white/70 dark:bg-slate-800/50 border border-slate-200/50 dark:border-white/20 hover:bg-white/80 dark:hover:bg-slate-800/60 transition-all duration-300 cursor-pointer group">

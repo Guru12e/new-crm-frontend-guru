@@ -1,16 +1,10 @@
-import { Card, CardContent } from "@/components/ui/card";
-import {
-  TrendingUp,
-  Calendar,
-  Mail,
-  Phone,
-  Linkedin,
-  Briefcase,
-  Building2,
-  UserCheck,
-  FileText,
-  User,
-} from "lucide-react";
+"use client";
+
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Calendar, Mail, Phone, Briefcase, User } from "lucide-react";
+import { FiLinkedin } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 
 const LeadCard = ({ lead }) => {
   const formatDate = (date) =>
@@ -18,161 +12,132 @@ const LeadCard = ({ lead }) => {
       dateStyle: "medium",
       timeStyle: "short",
     }).format(new Date(date));
+  const router = useRouter();
 
   return (
-    <Card className="backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 border-white/20 hover:shadow-lg transition-shadow">
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <div className="flex items-start space-x-2">
-            <TrendingUp className="w-5 h-5 text-blue-500 mt-1" />
+    <Card
+      className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md transition-all hover:shadow-xl dark:border-gray-800 dark:bg-gray-900 cursor-pointer"
+      onClick={() => router.push(`/crm/leads/${lead.id}`)}
+    >
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-green-500 to-blue-600" />
+
+      <CardHeader className="flex flex-col items-start space-y-4 p-5">
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-green-500 to-blue-600 text-white text-lg font-bold">
+              L
+            </div>
             <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Name
-              </p>
-              <p className="text-lg font-bold text-slate-900 dark:text-white">
-                {lead.name || "N/A"}
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                {lead.name || "Unnamed Lead"}
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {lead.company || "Company N/A"}
               </p>
             </div>
           </div>
-          <div className="flex items-start space-x-2">
-            <Mail className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Email
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
+
+          <Badge variant="secondary" className="text-xs">
+            {lead.status || "Unknown"}
+          </Badge>
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-4 px-5 pb-5">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
+          <InfoItem
+            icon={<Mail className="h-4 w-4 text-green-500" />}
+            label="Email"
+            value={
+              lead.email ? (
                 <a
                   href={`mailto:${lead.email}`}
                   className="text-blue-500 hover:underline"
                 >
                   {lead.email}
                 </a>
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <Phone className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Phone
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {lead.phone ? (
-                  <a
-                    href={`tel:${lead.phone}`}
-                    className="text-blue-500 hover:underline"
-                  >
-                    {lead.phone}
-                  </a>
-                ) : (
-                  "N/A"
-                )}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <Linkedin className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                LinkedIn
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {lead.linkedin ? (
-                  <a
-                    href={lead.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline"
-                  >
-                    {lead.linkedin}
-                  </a>
-                ) : (
-                  "N/A"
-                )}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <Briefcase className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Role
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {lead.role || "N/A"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <Building2 className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Company
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {lead.company || "N/A"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <UserCheck className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Owner
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {lead.owner || "N/A"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <UserCheck className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Status
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {lead.status || "N/A"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2 sm:col-span-2">
-            <FileText className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Description
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {lead.description || "N/A"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <User className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Owner ID
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {lead.userKey}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <TrendingUp className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                ID
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {lead.id}
-              </p>
-            </div>
-          </div>
+              ) : (
+                "N/A"
+              )
+            }
+          />
+
+          <InfoItem
+            icon={<Phone className="h-4 w-4 text-green-500" />}
+            label="Phone"
+            value={
+              lead.phone ? (
+                <a
+                  href={`tel:${lead.phone}`}
+                  className="text-blue-500 hover:underline"
+                >
+                  {lead.phone}
+                </a>
+              ) : (
+                "N/A"
+              )
+            }
+          />
+
+          <InfoItem
+            icon={<FiLinkedin className="h-4 w-4 text-green-500" />}
+            label="LinkedIn"
+            value={
+              lead.linkedin ? (
+                <a
+                  href={lead.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:underline"
+                >
+                  Profile
+                </a>
+              ) : (
+                "N/A"
+              )
+            }
+          />
+
+          <InfoItem
+            icon={<Briefcase className="h-4 w-4 text-green-500" />}
+            label="Role"
+            value={lead.role || "N/A"}
+          />
+
+          <InfoItem
+            icon={<Calendar className="h-4 w-4 text-green-500" />}
+            label="Created At"
+            value={formatDate(lead.created_at)}
+          />
+
+          <InfoItem
+            icon={<User className="h-4 w-4 text-green-500" />}
+            label="Owner Name"
+            value={lead.Users.name || "N/A"}
+          />
+        </div>
+
+        <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+            Description
+          </p>
+          <p className="text-sm text-gray-900 dark:text-gray-200 line-clamp-3">
+            {lead.description || "N/A"}
+          </p>
         </div>
       </CardContent>
     </Card>
   );
 };
+
+const InfoItem = ({ icon, label, value }) => (
+  <div className="flex items-start space-x-2">
+    {icon}
+    <div>
+      <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
+      <p className="text-sm text-gray-900 dark:text-white truncate">{value}</p>
+    </div>
+  </div>
+);
 
 export default LeadCard;

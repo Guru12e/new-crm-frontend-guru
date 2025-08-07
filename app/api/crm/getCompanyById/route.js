@@ -4,8 +4,7 @@ import { NextResponse } from "next/server";
 export async function POST(request) {
   try {
     const formData = await request.json();
-
-    if (!formData.userId) {
+    if (!formData.userId || !formData.id) {
       return NextResponse.json(
         { error: "Missing required fields" },
         { status: 400 }
@@ -13,29 +12,32 @@ export async function POST(request) {
     }
 
     const supabase = await createClient();
-    const { data: lists, error } = await supabase
-      .from("Lists")
+    const { data: company, error } = await supabase
+      .from("Companies")
       .select(
-        `*
-        , Users: userKey (name)
+        `
+        *,
+        Users: userKey (name)
       `
       )
-      .eq("userKey", formData.userId);
+      .eq("id", formData.id)
+      .eq("userKey", formData.userId)
+      .single();
 
     if (error) {
-      console.error(error);
+      console.error("Error fetching company:", error);
       return NextResponse.json(
-        { error: "Failed to fetch lists" },
+        { error: "Failed to fetch company" },
         { status: 500 }
       );
     }
 
-    return NextResponse.json(lists, { status: 200 });
+    return NextResponse.json(company, { status: 200 });
   } catch (error) {
-    console.error(error);
+    console.error("Error parsing request body:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
+      { error: "Invalid request body" },
+      { status: 400 }
     );
   }
 }

@@ -15,7 +15,14 @@ export async function POST(request) {
     const supabase = await createClient();
     const { data: deals, error } = await supabase
       .from("Deals")
-      .select("*")
+      .select(
+        `
+        *,
+        Users:userKey(name),
+        Companies:company(name),
+        Leads:leads(name, email)
+      `
+      )
       .eq("userKey", formData.userId);
 
     if (error) {
@@ -26,7 +33,28 @@ export async function POST(request) {
       );
     }
 
-    return NextResponse.json(deals, { status: 200 });
+    const dealsWithContacts = await Promise.all(
+      deals.map(async (deal) => {
+        let contactsList = [];
+        if (deal.contacts && deal.contacts.length > 0) {
+          const { data: contacts, error: contactsError } = await supabase
+            .from("Contacts")
+            .select("name, email")
+            .in("id", deal.contacts);
+
+          if (!contactsError && contacts) {
+            contactsList = contacts.map((contact) => contact.name);
+          }
+        }
+
+        return {
+          ...deal,
+          Contacts: contactsList,
+        };
+      })
+    );
+
+    return NextResponse.json(dealsWithContacts, { status: 200 });
   } catch (error) {
     console.error(error);
     return NextResponse.json(

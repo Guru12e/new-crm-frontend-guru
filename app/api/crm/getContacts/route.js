@@ -15,7 +15,11 @@ export async function POST(request) {
     const supabase = await createClient();
     const { data: contacts, error } = await supabase
       .from("Contacts")
-      .select("*")
+      .select(
+        `*
+        , Users: userKey (name)
+      `
+      )
       .eq("userKey", formData.userId);
 
     if (error) {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "./ui/card";
 import { Button } from "./ui/button";
 import { signIn } from "next-auth/react";
@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 
 const OnBoarding = () => {
   const router = useRouter();
+  const [dots, setDots] = useState([]);
   useEffect(() => {
     const getUser = async () => {
       const response = await fetch("/api/getUser");
@@ -16,6 +17,14 @@ const OnBoarding = () => {
         router.push("/home");
       }
     };
+
+    const generatedDots = Array.from({ length: 15 }, () => ({
+      left: `${Math.random() * 100}%`,
+      top: `${Math.random() * 100}%`,
+      delay: `${Math.random() * 5}s`,
+      duration: `${3 + Math.random() * 4}s`,
+    }));
+    setDots(generatedDots);
 
     getUser();
   }, []);
@@ -44,17 +53,17 @@ const OnBoarding = () => {
         </div>
 
         <div className="absolute inset-0">
-          {[...Array(20)].map((_, i) => (
+          {dots.map((dot, i) => (
             <div
               key={i}
-              className="absolute w-2 h-2 bg-white/20 rounded-full animate-pulse-slow"
+              className="w-2 h-2 bg-white/20 rounded-full animate-pulse-slow"
               style={{
-                left: `${Math.random() * 100}%`,
-                top: `${Math.random() * 100}%`,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${3 + Math.random() * 4}s`,
+                left: dot.left,
+                top: dot.top,
+                animationDelay: dot.delay,
+                animationDuration: dot.duration,
               }}
-            ></div>
+            />
           ))}
         </div>
       </div>

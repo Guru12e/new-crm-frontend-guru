@@ -17,6 +17,8 @@ export async function GET(request) {
     .eq("email", session.user.email)
     .single();
 
+  console.log(user);
+
   if (userError || !user) {
     return NextResponse.json({ error: "User not found" }, { status: 404 });
   }

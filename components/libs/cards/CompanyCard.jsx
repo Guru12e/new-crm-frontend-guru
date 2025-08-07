@@ -1,212 +1,149 @@
-import { Card, CardContent } from "@/components/ui/card";
+"use client";
+
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import {
-  Building2,
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
+import {
   Calendar,
   Globe,
-  Linkedin,
   Users,
   TrendingUp,
   DollarSign,
-  MapPin,
-  FileText,
   User,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { FiLinkedin } from "react-icons/fi";
 
 const CompanyCard = ({ company }) => {
   const formatDate = (date) =>
-    new Intl.DateTimeFormat("en-US", {
-      dateStyle: "medium",
-      timeStyle: "short",
-    }).format(new Date(date));
+    new Intl.DateTimeFormat("en-US", { dateStyle: "medium" }).format(
+      new Date(date)
+    );
 
   const formatRevenue = (revenue) =>
     revenue != null
       ? new Intl.NumberFormat("en-US", {
           style: "currency",
           currency: "USD",
-          minimumFractionDigits: 0,
+          notation: "compact",
         }).format(revenue)
       : "N/A";
 
+  const router = useRouter();
+
   return (
-    <Card className="backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 border-white/20 hover:shadow-lg transition-shadow">
-      <CardContent className="p-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div className="flex items-start space-x-2">
-            <Building2 className="w-5 h-5 text-blue-500 mt-1" />
+    <Card
+      onClick={() => router.push(`/crm/companies/${company.id}`)}
+      className="group relative cursor-pointer overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md transition-all hover:shadow-xl dark:border-gray-800 dark:bg-gray-900"
+    >
+      <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600" />
+
+      <CardHeader className="flex flex-col items-start space-y-3 p-5">
+        <div className="flex w-full items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-purple-600 text-white font-bold text-lg">
+              {company.name.charAt(0)}
+            </div>
             <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Company Name
-              </p>
-              <p className="text-lg font-bold text-slate-900 dark:text-white">
+              <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                 {company.name}
+              </h2>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                {company.city && company.country
+                  ? `${company.city}, ${company.country}`
+                  : "Location N/A"}
               </p>
             </div>
           </div>
-          <div className="flex items-start space-x-2">
-            <Calendar className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Created At
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {formatDate(company.created_at)}
-              </p>
-            </div>
+          <Badge variant="secondary" className="text-xs">
+            {company.stage || "N/A"}
+          </Badge>
+        </div>
+      </CardHeader>
+
+      <CardContent className="space-y-4 px-5 pb-5">
+        <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="flex items-center space-x-2">
+            <Calendar className="h-4 w-4 text-blue-500" />
+            <span className="text-gray-700 dark:text-gray-300">
+              {formatDate(company.created_at)}
+            </span>
           </div>
-          <div className="flex items-start space-x-2">
-            <Globe className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Website
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {company.website ? (
-                  <a
-                    href={company.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline"
-                  >
-                    {company.website}
-                  </a>
-                ) : (
-                  "N/A"
-                )}
-              </p>
-            </div>
+          <div className="flex items-center space-x-2">
+            <Users className="h-4 w-4 text-blue-500" />
+            <span>{company.size || "N/A"}</span>
           </div>
-          <div className="flex items-start space-x-2">
-            <Linkedin className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                LinkedIn
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {company.linkedin ? (
-                  <a
-                    href={company.linkedin}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-500 hover:underline"
-                  >
-                    {company.linkedin}
-                  </a>
-                ) : (
-                  "N/A"
-                )}
-              </p>
-            </div>
+
+          <div className="flex items-center space-x-2">
+            <Globe className="h-4 w-4 text-blue-500" />
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <a
+                  href={company.website || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="truncate text-blue-600 hover:underline dark:text-blue-400"
+                >
+                  {company.website ? "Visit" : "N/A"}
+                </a>
+              </HoverCardTrigger>
+              {company.website && (
+                <HoverCardContent className="text-xs">
+                  {company.website}
+                </HoverCardContent>
+              )}
+            </HoverCard>
           </div>
-          <div className="flex items-start space-x-2">
-            <Users className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Size
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {company.size || "N/A"}
-              </p>
-            </div>
+
+          <div className="flex items-center space-x-2">
+            <FiLinkedin className="h-4 w-4 text-blue-500" />
+            <HoverCard>
+              <HoverCardTrigger asChild>
+                <a
+                  href={company.linkedin || "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="truncate text-blue-600 hover:underline dark:text-blue-400"
+                >
+                  {company.linkedin ? "Profile" : "N/A"}
+                </a>
+              </HoverCardTrigger>
+              {company.linkedin && (
+                <HoverCardContent className="text-xs">
+                  {company.linkedin}
+                </HoverCardContent>
+              )}
+            </HoverCard>
           </div>
-          <div className="flex items-start space-x-2">
-            <TrendingUp className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Stage
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {company.stage || "N/A"}
-              </p>
-            </div>
+
+          <div className="flex items-center space-x-2">
+            <DollarSign className="h-4 w-4 text-blue-500" />
+            <span>{formatRevenue(company.revenue)}</span>
           </div>
-          <div className="flex items-start space-x-2">
-            <DollarSign className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Revenue
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {formatRevenue(company.revenue)}
-              </p>
-            </div>
+
+          <div className="flex items-center space-x-2">
+            <TrendingUp className="h-4 w-4 text-blue-500" />
+            <span>{company.stage || "N/A"}</span>
           </div>
-          <div className="flex items-start space-x-2">
-            <MapPin className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                City
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {company.city || "N/A"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <MapPin className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                State
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {company.state || "N/A"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <MapPin className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Country
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {company.country || "N/A"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <MapPin className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Postal Code
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {company.postal || "N/A"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2 sm:col-span-2 lg:col-span-3">
-            <FileText className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Description
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {company.description || "N/A"}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <User className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                Owner ID
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {company.userKey}
-              </p>
-            </div>
-          </div>
-          <div className="flex items-start space-x-2">
-            <Building2 className="w-5 h-5 text-blue-500 mt-1" />
-            <div>
-              <p className="text-sm font-medium text-slate-600 dark:text-slate-400">
-                ID
-              </p>
-              <p className="text-sm text-slate-900 dark:text-white">
-                {company.id}
-              </p>
-            </div>
+        </div>
+
+        <div className="pt-3 border-t border-gray-200 dark:border-gray-700">
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+            Description
+          </p>
+          <p className="text-sm text-gray-900 dark:text-gray-200 line-clamp-3">
+            {company.description || "N/A"}
+          </p>
+        </div>
+
+        <div>
+          <div className="flex items-center space-x-2">
+            <User className="h-4 w-4 text-blue-500" />
+            <span>{company.Users.name || "N/A"}</span>
           </div>
         </div>
       </CardContent>

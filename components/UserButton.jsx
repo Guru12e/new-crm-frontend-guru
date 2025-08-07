@@ -14,9 +14,11 @@ import { Button } from "./ui/button";
 import { signOut } from "next-auth/react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function UserButton() {
   const [user, setUser] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -24,7 +26,15 @@ export default function UserButton() {
       if (res.status === 200) {
         const data = await res.json();
         localStorage.setItem("session", JSON.stringify(data));
+        const response = await fetch("/api/getUser");
+        if (response.status !== 200) {
+          router.push("/");
+          return;
+        }
+        localStorage.setItem("user", JSON.stringify(await response.json()));
         setUser(data.user || null);
+      } else {
+        router.push("/");
       }
     };
     fetchUser();
