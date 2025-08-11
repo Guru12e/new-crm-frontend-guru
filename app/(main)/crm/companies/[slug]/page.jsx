@@ -248,7 +248,7 @@ const CompanyPage = () => {
             </Button>
           )}
           <Dialog>
-            <DialogTrigger>
+            <DialogTrigger asChild>
               <Button
                 variant="destructive"
                 className="bg-red-500 hover:bg-red-600"

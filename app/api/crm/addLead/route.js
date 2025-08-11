@@ -29,16 +29,19 @@ export async function POST(request) {
           status: formData.status || null,
           userKey: formData.userId,
         })
-        .select();
+        .select("id")
+        .single();
       if (companyError) {
-        console.log(companyError);
         return NextResponse.json(
           { error: `Failed to insert company: ${companyError.message}` },
           { status: 500 }
         );
       }
 
-      return NextResponse.json({ success: true }, { status: 200 });
+      return NextResponse.json(
+        { id: companyData.id, success: true },
+        { status: 200 }
+      );
     } else {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }

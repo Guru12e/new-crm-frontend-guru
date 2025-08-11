@@ -21,7 +21,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { toast } from "react-toastify";
 import { Textarea } from "@/components/ui/textarea";
 
-const CompanyForm = ({ className }) => {
+const CompanyForm = ({ className, listAdd, list }) => {
   const [formData, setFormData] = useState({
     name: "",
     industry: "",
@@ -135,6 +135,20 @@ const CompanyForm = ({ className }) => {
           description: "",
         });
 
+        if (listAdd) {
+          const newContact = await req.json();
+          console.log(newContact);
+          const updateList = await fetch("/api/crm/updateList", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: newContact.id,
+              userId: userId,
+              type: "Contact",
+              listId: list,
+            }),
+          });
+        }
         const sheet = document.querySelector("[data-state='open']");
         if (sheet) {
           sheet.dispatchEvent(new Event("close"));

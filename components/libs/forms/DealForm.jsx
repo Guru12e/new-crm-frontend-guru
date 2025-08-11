@@ -589,7 +589,7 @@ const DealForm = ({ className }) => {
             loading
               ? "bg-gray-400 hover:bg-gray-500"
               : "bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600"
-          } text-white`}
+          } text-white cursor-pointer`}
         >
           {loading && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
           Add Deal

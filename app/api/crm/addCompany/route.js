@@ -29,7 +29,8 @@ export async function POST(request) {
         description: formData.description || null,
         userKey: formData.userId,
       })
-      .select();
+      .select("id")
+      .single();
 
     if (userError) {
       console.log(userError);
@@ -39,7 +40,10 @@ export async function POST(request) {
       );
     }
 
-    return NextResponse.json({ success: true }, { status: 200 });
+    return NextResponse.json(
+      { id: Company.id, success: true },
+      { status: 200 }
+    );
   } catch (error) {
     return NextResponse.json(
       { error: "Internal server error" },

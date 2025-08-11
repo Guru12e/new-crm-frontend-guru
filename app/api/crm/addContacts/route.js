@@ -27,7 +27,9 @@ export async function POST(request) {
           description: formData.description || null,
           userKey: formData.userId,
         })
-        .select();
+        .select("id")
+        .single();
+
       if (companyError) {
         console.log(companyError);
         return NextResponse.json(
@@ -36,11 +38,15 @@ export async function POST(request) {
         );
       }
 
-      return NextResponse.json({ success: true }, { status: 200 });
+      return NextResponse.json(
+        { success: true, id: companyData.id },
+        { status: 200 }
+      );
     } else {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

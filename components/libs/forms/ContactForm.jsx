@@ -22,7 +22,7 @@ import { toast } from "react-toastify";
 import PhoneInput from "../PhoneInput";
 import { Textarea } from "@/components/ui/textarea";
 
-const ContactForm = ({ className }) => {
+const ContactForm = ({ className, listAdd, list }) => {
   const [formData, setFormData] = useState({
     email: "",
     name: "",
@@ -131,6 +131,21 @@ const ContactForm = ({ className }) => {
           status: "",
           description: "",
         });
+
+        if (listAdd) {
+          const newContact = await req.json();
+          console.log(newContact);
+          const updateList = await fetch("/api/crm/updateList", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              id: newContact.id,
+              userId: userId,
+              type: "Contact",
+              listId: list,
+            }),
+          });
+        }
 
         const sheet = document.querySelector("[data-state='open']");
         if (sheet) {

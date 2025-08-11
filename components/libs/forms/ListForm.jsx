@@ -65,7 +65,7 @@ const ListForm = ({ className }) => {
 
     if (
       formData.type.length > 0 &&
-      !["Company", "Contacts", "Leads"].includes(formData.type)
+      !["Company", "Contact", "Lead"].includes(formData.type)
     ) {
       newErrors.type = "Invalid type selected";
       isValid = false;
@@ -176,7 +176,7 @@ const ListForm = ({ className }) => {
               Type
             </Label>
             <div className="flex flex-col gap-2">
-              {["Company", "Contacts", "Leads"].map((type) => (
+              {["Company", "Contact", "Lead"].map((type) => (
                 <div key={type} className="flex items-center gap-2">
                   <Input
                     type="checkbox"

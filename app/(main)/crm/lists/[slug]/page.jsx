@@ -2,27 +2,10 @@
 
 import { useRouter, useParams } from "next/navigation";
 import { useEffect, useState } from "react";
-import {
-  ArrowLeft,
-  Trash2,
-  Edit2,
-  Save,
-  AlertCircle,
-  Plus,
-} from "lucide-react";
+import { ArrowLeft, Trash2, Plus, PlusIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Label } from "@/components/ui/label";
 import { toast } from "react-toastify";
-import {
-  Select,
-  SelectTrigger,
-  SelectContent,
-  SelectItem,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Dialog,
   DialogClose,
@@ -32,31 +15,61 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import ContactForm from "@/components/libs/forms/ContactForm";
+import LeadForm from "@/components/libs/forms/LeadForm";
+import CompanyForm from "@/components/libs/forms/CompanyForm";
+import CompanyCard from "@/components/libs/cards/CompanyCard";
 
 const ListPage = () => {
   const router = useRouter();
   const { slug } = useParams();
   const [listData, setListData] = useState(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [formData, setFormData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [errors, setErrors] = useState({});
   const [userId, setUserId] = useState(null);
-  const [isNewType, setIsNewType] = useState(false);
   const [listItems, setListItems] = useState([]);
-  const [listTypes, setListTypes] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const ErrorMessage = ({ error, id }) =>
-    error && (
-      <div
-        className="flex items-center gap-1 text-red-500 text-sm mt-1"
-        role="alert"
-      >
-        <AlertCircle className="w-4 h-4" />
-        {error}
-      </div>
-    );
+  const HandleUpdate = async (id) => {
+    try {
+      setLoading(true);
+      const userId = JSON.parse(localStorage.getItem("user") || "{}").id;
+      const response = await fetch(`/api/crm/updateList`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id: id,
+          type: listData.type,
+          userId,
+          listId: listData.id,
+        }),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to add company to list");
+      }
+      const updatedList = await response.json();
+      setListData(updatedList);
+      toast.success("Company added to list", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      setLoading(false);
+    } catch (error) {
+      toast.error(error.message || "Failed to add company to list", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+    }
+  };
 
   useEffect(() => {
     const fetchListData = async () => {
@@ -92,15 +105,44 @@ const ListPage = () => {
         }
 
         setListData(data);
-        setFormData({
-          ...data,
-          array: data.array || [],
-        });
 
-        setListItems([{ id: 1, name: "Sample Item" }]);
-        setListTypes(["Lead", "Contact", "Customer"]);
+        if (data.type == "Company") {
+          const companyRes = await fetch(`/api/crm/getCompanies`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId }),
+          });
+          const companies = await companyRes.json();
+          setListItems(companies);
+        } else if (data.type == "Contact") {
+          const contactRes = await fetch(`/api/crm/getContacts`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId }),
+          });
+          const contacts = await contactRes.json();
+          setListItems(contacts);
+        } else if (data.type == "Lead") {
+          const leadRes = await fetch(`/api/crm/getLeads`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ userId }),
+          });
+          const leads = await leadRes.json();
+          setListItems(leads);
+        }
       } catch (err) {
-        setError(err.message || "An error occurred");
+        toast.error(err.message || "Failed to fetch list data", {
+          position: "top-right",
+          autoClose: 5000,
+        });
+        router.push("/crm");
       } finally {
         setIsLoading(false);
       }
@@ -108,86 +150,6 @@ const ListPage = () => {
 
     fetchListData();
   }, [slug, router]);
-
-  const validateForm = () => {
-    const newErrors = {};
-    let isValid = true;
-
-    if (!formData?.name?.trim()) {
-      newErrors.name = "Name is required";
-      isValid = false;
-    }
-
-    if (!formData?.type?.trim()) {
-      newErrors.type = "Type is required";
-      isValid = false;
-    }
-
-    if (!formData?.access || !["Public", "Private"].includes(formData.access)) {
-      newErrors.access = "Access must be Public or Private";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => (prev ? { ...prev, [name]: value || "" } : prev));
-    setErrors((prev) => ({ ...prev, [name]: "" }));
-  };
-
-  const handleSelectChange = (field, value) => {
-    setFormData((prev) => (prev ? { ...prev, [field]: value || "" } : prev));
-    setErrors((prev) => ({ ...prev, [field]: "" }));
-  };
-
-  const handleMultiSelectChange = (field, value) => {
-    setFormData((prev) => (prev ? { ...prev, [field]: value || [] } : prev));
-    setErrors((prev) => ({ ...prev, [field]: "" }));
-  };
-
-  const handleUpdate = async () => {
-    if (!formData || !validateForm()) {
-      toast.error("Please fix form errors", {
-        position: "top-right",
-        autoClose: 5000,
-      });
-      return;
-    }
-
-    try {
-      setIsLoading(true);
-      const response = await fetch(`/api/crm/updateList`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ id: slug, userId, ...formData }),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to update list");
-      }
-
-      const updatedData = await response.json();
-      setListData(updatedData);
-      setIsEditing(false);
-      setIsNewType(false);
-      toast.success("List updated successfully", {
-        position: "top-right",
-        autoClose: 5000,
-      });
-    } catch (err) {
-      toast.error(err.message || "Failed to update list", {
-        position: "top-right",
-        autoClose: 5000,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleDelete = async () => {
     try {
@@ -227,16 +189,6 @@ const ListPage = () => {
     );
   }
 
-  if (error || !listData) {
-    return (
-      <div className="container mx-auto p-4">
-        <Alert variant="destructive" className="max-w-md mx-auto">
-          <AlertDescription>{error || "List not found"}</AlertDescription>
-        </Alert>
-      </div>
-    );
-  }
-
   return (
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
@@ -248,17 +200,106 @@ const ListPage = () => {
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div className="flex gap-3">
-          {!isEditing && (
-            <Button
-              onClick={() => setIsEditing(true)}
-              className="bg-purple-500 hover:bg-purple-600"
-            >
-              <Edit2 className="mr-2 h-4 w-4" />
-              Edit
-            </Button>
-          )}
+          <Sheet className="relative w-max">
+            <SheetTrigger asChild>
+              <Button className="bg-purple-500 hover:bg-purple-600">
+                <PlusIcon className="mr-2 h-4 w-4" />
+                Add {listData.type || "Item"}
+              </Button>
+            </SheetTrigger>
+            {listData.type === "Contact" && (
+              <ContactForm className="p-6" listAdd={true} list={listData.id} />
+            )}
+            {listData.type === "Lead" && (
+              <LeadForm className="p-6" listAdd={true} list={listData.id} />
+            )}
+            {listData.type === "Company" && (
+              <CompanyForm className="p-6" listAdd={true} list={listData.id} />
+            )}
+          </Sheet>
+          <Sheet className="relative w-max">
+            <SheetTrigger asChild>
+              <Button className="bg-purple-500 hover:bg-purple-600">
+                <PlusIcon className="mr-2 h-4 w-4" />
+                Add Existing {listData.type || "Item"}
+              </Button>
+            </SheetTrigger>
+            <SheetContent className={`px-3 py-2 max-w-[500px]`} side="right">
+              <SheetHeader>
+                <SheetTitle>Add Existing {listData.type || "Item"}</SheetTitle>
+                <SheetDescription>
+                  Select an existing {listData.type || "item"} to add to this
+                  list.
+                </SheetDescription>
+              </SheetHeader>
+              <div className="grid grid-cols-1 w-full gap-4">
+                {listData.type === "Contact" &&
+                  listItems
+                    .filter(
+                      (item) =>
+                        !listData.arrayValues
+                          .map((list) => list.id)
+                          .includes(item.id)
+                    )
+                    .map((contact) => (
+                      <div
+                        className="w-full flex items-center justify-between cursor-pointer bg-gray-300 opacity-80 hover:opacity-100 p-2 rounded-md"
+                        key={contact.id}
+                        onClick={() => HandleUpdate(contact.id)}
+                      >
+                        {contact.name && contact.name}
+                        <Button variant="none" className="bg-transparent">
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                {listData.type === "Company" &&
+                  listItems.length > 0 &&
+                  listItems
+                    .filter(
+                      (item) =>
+                        !listData.arrayValues
+                          .map((list) => list.id)
+                          .includes(item.id)
+                    )
+                    .map((company) => (
+                      <div
+                        className="w-full flex items-center justify-between cursor-pointer bg-gray-300 opacity-80 hover:opacity-100 p-2 rounded-md"
+                        key={company.id}
+                        onClick={() => HandleUpdate(company.id)}
+                      >
+                        {company.name && company.name}
+                        <Button variant="none" className="bg-transparent">
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+                {listData.type === "Lead" &&
+                  listItems.length > 0 &&
+                  listItems
+                    .filter(
+                      (item) =>
+                        !listData.arrayValues
+                          .map((list) => list.id)
+                          .includes(item.id)
+                    )
+                    .map((lead) => (
+                      <div
+                        className="w-full flex items-center justify-between cursor-pointer bg-gray-300 opacity-80 hover:opacity-100 p-2 rounded-md"
+                        key={lead.id}
+                        onClick={() => HandleUpdate(lead.id)}
+                      >
+                        {lead.name && lead.name}
+                        <Button variant="none" className="bg-transparent">
+                          <Plus className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    ))}
+              </div>
+            </SheetContent>
+          </Sheet>
           <Dialog>
-            <DialogTrigger>
+            <DialogTrigger asChild>
               <Button
                 variant="destructive"
                 className="bg-red-500 hover:bg-red-600"
@@ -275,7 +316,7 @@ const ListPage = () => {
                   your list and remove the data from our servers.
                 </DialogDescription>
                 <div className="flex justify-end mt-4">
-                  <DialogClose>
+                  <DialogClose asChild>
                     <Button variant="outline" className="mr-2">
                       Cancel
                     </Button>
@@ -302,223 +343,100 @@ const ListPage = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-6">
-          <div className="grid gap-6">
-            {isEditing ? (
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <Label
-                    htmlFor="name"
-                    className="text-slate-700 dark:text-slate-300"
-                  >
-                    Name *
-                  </Label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formData?.name || ""}
-                    onChange={handleInputChange}
-                    className={`bg-white/50 mt-2 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
-                      errors.name ? "border-red-500" : ""
-                    }`}
-                    placeholder="List name"
-                    required
-                    aria-invalid={!!errors.name}
-                    aria-describedby={errors.name ? "name-error" : undefined}
-                  />
-                  <ErrorMessage error={errors.name} id="name-error" />
-                </div>
-                <div>
-                  <Label
-                    htmlFor="type"
-                    className="text-slate-700 dark:text-slate-300"
-                  >
-                    Type *
-                  </Label>
-                  {isNewType ? (
-                    <div className="flex items-center gap-2 mt-2">
-                      <Input
-                        id="type"
-                        name="type"
-                        value={formData?.type || ""}
-                        onChange={handleInputChange}
-                        className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white placeholder:text-slate-500 dark:placeholder:text-slate-400 ${
-                          errors.type ? "border-red-500" : ""
-                        }`}
-                        placeholder="Enter new type"
-                        required
-                        aria-invalid={!!errors.type}
-                        aria-describedby={
-                          errors.type ? "type-error" : undefined
-                        }
-                      />
-                      <Button
-                        variant="outline"
-                        onClick={() => setIsNewType(false)}
-                        className="border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
-                      >
-                        Use Existing
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-2 mt-2">
-                      <Select
-                        value={formData?.type || ""}
-                        onValueChange={(value) =>
-                          handleSelectChange("type", value)
-                        }
-                      >
-                        <SelectTrigger
-                          className={`bg-white/50 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white ${
-                            errors.type ? "border-red-500" : ""
-                          }`}
-                        >
-                          <SelectValue placeholder="Select Type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {listTypes.map((type) => (
-                            <SelectItem key={type} value={type}>
-                              {type}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          setIsNewType(true);
-                          setFormData((prev) =>
-                            prev ? { ...prev, type: "" } : prev
-                          );
-                        }}
-                        className="border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
-                      >
-                        <Plus className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  )}
-                  <ErrorMessage error={errors.type} id="type-error" />
-                </div>
-                <div>
-                  <Label
-                    htmlFor="array"
-                    className="text-slate-700 dark:text-slate-300"
-                  >
-                    Items
-                  </Label>
-                  <Select
-                    value={formData?.array || []}
-                    onValueChange={(value) =>
-                      handleMultiSelectChange("array", value)
-                    }
-                    multiple
-                  >
-                    <SelectTrigger className="bg-white/50 mt-2 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white">
-                      <SelectValue placeholder="Select Items" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {listItems.map((item) => (
-                        <SelectItem key={item.id} value={item.id}>
-                          {item.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div>
-                  <Label
-                    htmlFor="access"
-                    className="text-slate-700 dark:text-slate-300"
-                  >
-                    Access *
-                  </Label>
-                  <Select
-                    value={formData?.access || ""}
-                    onValueChange={(value) =>
-                      handleSelectChange("access", value)
-                    }
-                  >
-                    <SelectTrigger
-                      className={`bg-white/50 mt-2 dark:bg-slate-800/50 border-white/20 dark:border-slate-700/50 text-slate-900 dark:text-white ${
-                        errors.access ? "border-red-500" : ""
-                      }`}
+          <div className="flex flex-col gap-6">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  Associated User
+                </p>
+                <p className="text-slate-900 dark:text-white">
+                  {listData.Users?.name || "N/A"}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  Type
+                </p>
+                <p className="text-slate-900 dark:text-white">
+                  {listData.type || "N/A"}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  Items
+                </p>
+                <p className="text-slate-900 dark:text-white">
+                  {listData.array?.length > 0
+                    ? listData.array.join(", ")
+                    : "N/A"}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
+                  Access
+                </p>
+                <p
+                  className={
+                    listData.access === "Public"
+                      ? "text-green-700 dark:text-green-200"
+                      : listData.access === "Private"
+                      ? "text-red-700 dark:text-red-200"
+                      : "text-slate-900 dark:text-white"
+                  }
+                >
+                  {listData.access || "N/A"}
+                </p>
+              </div>
+            </div>
+            {listData.type === "Company" &&
+              (listData.arrayValues?.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {listData.arrayValues.map((company) => (
+                    <div
+                      key={company.id}
+                      className="relative flex flex-col gap-3 cursor-pointer"
                     >
-                      <SelectValue placeholder="Select Access" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="Public">Public</SelectItem>
-                      <SelectItem value="Private">Private</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <ErrorMessage error={errors.access} id="access-error" />
+                      <CompanyCard company={company} />
+                      <Button
+                        variant="destructive"
+                        className="absolute bottom-2 cursor-pointer z-10 right-2 bg-red-500 hover:bg-red-600"
+                        onClick={() => HandleUpdate(company.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                        Delete
+                      </Button>
+                    </div>
+                  ))}
                 </div>
-                <div className="md:col-span-2 flex gap-3">
-                  <Button
-                    onClick={handleUpdate}
-                    className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
-                  >
-                    <Save className="mr-2 h-4 w-4" />
-                    Save
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setIsEditing(false);
-                      setFormData(listData);
-                      setErrors({});
-                      setIsNewType(false);
-                    }}
-                    className="border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800"
-                  >
-                    Cancel
-                  </Button>
+              ) : (
+                <p className="text-slate-500 dark:text-slate-400">
+                  No companies found.
+                </p>
+              ))}
+            {listData.type === "Contact" &&
+              (listData.arrayValues?.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {listData.arrayValues.map((contact) => (
+                    <ContactCard key={contact.id} contact={contact} />
+                  ))}
                 </div>
-              </div>
-            ) : (
-              <div className="grid gap-4 md:grid-cols-2">
-                <div>
-                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                    Associated User
-                  </p>
-                  <p className="text-slate-900 dark:text-white">
-                    {listData.Users?.name || "N/A"}
-                  </p>
+              ) : (
+                <p className="text-slate-500 dark:text-slate-400">
+                  No contacts found.
+                </p>
+              ))}
+            {listData.type === "Lead" &&
+              (listData.arrayValues?.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {listData.arrayValues.map((lead) => (
+                    <LeadCard key={lead.id} lead={lead} />
+                  ))}
                 </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                    Type
-                  </p>
-                  <p className="text-slate-900 dark:text-white">
-                    {listData.type || "N/A"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                    Items
-                  </p>
-                  <p className="text-slate-900 dark:text-white">
-                    {listData.array?.length > 0
-                      ? listData.array.join(", ")
-                      : "N/A"}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
-                    Access
-                  </p>
-                  <p
-                    className={
-                      listData.access === "Public"
-                        ? "text-green-700 dark:text-green-200"
-                        : listData.access === "Private"
-                        ? "text-red-700 dark:text-red-200"
-                        : "text-slate-900 dark:text-white"
-                    }
-                  >
-                    {listData.access || "N/A"}
-                  </p>
-                </div>
-              </div>
-            )}
+              ) : (
+                <p className="text-slate-500 dark:text-slate-400">
+                  No leads found.
+                </p>
+              ))}
           </div>
         </CardContent>
       </Card>

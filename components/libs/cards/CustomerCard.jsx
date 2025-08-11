@@ -10,9 +10,20 @@ import {
   Users,
   DollarSign,
   MapPin,
+  Eye,
+  PenBox,
+  Trash,
+  Circle,
 } from "lucide-react";
 import { FiLinkedin } from "react-icons/fi";
 import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { useState } from "react";
 
 const CustomerCard = ({ customer }) => {
   const formatDate = (date) =>
@@ -22,12 +33,67 @@ const CustomerCard = ({ customer }) => {
     }).format(new Date(date));
 
   const router = useRouter();
+  const [statusLoading, setStatusLoading] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const UpdateStatus = async (id, status) => {
+    try {
+      const updatedCustomer = {
+        ...customer,
+        stage: status,
+      };
+      setStatusLoading(true);
+      const response = await fetch("/api/crm/updateCustomer", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          id,
+          userId: customer.userKey,
+          ...updatedCustomer,
+        }),
+      });
+      setStatusLoading(false);
+      if (!response.ok) {
+        throw new Error("Failed to update status");
+      }
+    } catch (error) {
+      console.error("Error updating status:", error);
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      setDeleteLoading(true);
+      const response = await fetch(`/api/crm/deleteCustomer`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id: customer.id, userId: customer.userKey }),
+      });
+      setDeleteLoading(false);
+
+      if (!response.ok) {
+        throw new Error("Failed to delete customer");
+      }
+
+      toast.success("Customer deleted successfully", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+      router.push("/crm");
+    } catch (err) {
+      toast.error(err.message || "Failed to delete customer", {
+        position: "top-right",
+        autoClose: 5000,
+      });
+    }
+  };
 
   return (
-    <Card
-      className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md transition-all hover:shadow-xl dark:border-gray-800 dark:bg-gray-900 cursor-pointer"
-      onClick={() => router.push(`/crm/customers/${customer.id}`)}
-    >
+    <Card className="group relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-md transition-all hover:shadow-xl dark:border-gray-800 dark:bg-gray-900 cursor-pointer">
       <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-500 to-purple-600" />
 
       <CardHeader className="flex flex-col items-start space-y-4 p-5">
@@ -54,7 +120,7 @@ const CustomerCard = ({ customer }) => {
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-4 px-5 pb-5">
+      <CardContent className="space-y-4 px-5">
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
           <InfoItem
             icon={<Calendar className="h-4 w-4 text-blue-500" />}
@@ -164,6 +230,74 @@ const CustomerCard = ({ customer }) => {
           <p className="text-sm text-gray-900 dark:text-gray-200 line-clamp-3">
             {customer.description || "N/A"}
           </p>
+        </div>
+
+        <div className="pt-6 border-t border-gray-200 dark:border-gray-700 flex w-full justify-end space-x-2">
+          <div
+            className="flex items-center space-x-2 justify-center bg-green-200 p-2 rounded-md cursor-pointer hover:bg-green-300 text-green-600"
+            onClick={() => router.push(`/crm/customers/${customer.id}`)}
+          >
+            <Eye className="h-4 w-4 " />
+            <span className="text-xs">View</span>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <div
+                className={`flex items-center space-x-2 justify-center bg-blue-200 p-2 rounded-md cursor-pointer hover:bg-blue-300 text-blue-600 ${
+                  statusLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                {statusLoading && (
+                  <span className="animate-spin">
+                    <Circle className="h-4 w-4 text-white" />
+                  </span>
+                )}
+                <PenBox className="h-4 w-4 " />
+                <span className="text-xs">Edit Status</span>
+              </div>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem
+                value="Prospect"
+                onClick={() => {
+                  UpdateStatus(customer.id, "Prospect");
+                }}
+              >
+                Prospect
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                value="Lead"
+                onClick={() => {
+                  UpdateStatus(customer.id, "Lead");
+                }}
+              >
+                Lead
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                value="Customer"
+                onClick={() => {
+                  UpdateStatus(customer.id, "Customer");
+                }}
+              >
+                Customer
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                value="Churned"
+                onClick={() => {
+                  UpdateStatus(customer.id, "Churned");
+                }}
+              >
+                Churned
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <div
+            className="flex items-center space-x-2 justify-center bg-red-200 p-2 rounded-md cursor-pointer hover:bg-red-300 text-red-600"
+            onClick={handleDelete}
+          >
+            <Trash className="h-4 w-4 " />
+            <span className="text-xs">Delete</span>
+          </div>
         </div>
       </CardContent>
     </Card>
